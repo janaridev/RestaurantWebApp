@@ -6,7 +6,13 @@ export const CouponSchema = new Schema({
     unique: true,
     required: true,
   },
-  couponCode: String,
-  discountAmount: Number,
+  couponCode: {
+    type: String,
+    required: true,
+  },
+  discountAmount: {
+    type: Number,
+    required: true,
+  },
   minAmount: Number,
 });
