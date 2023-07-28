@@ -1,3 +1,4 @@
+import { IUpdateCouponDto } from "dtos/updateCoupon.dto";
 import { ICreateCouponDto } from "../dtos/createCoupon.dto";
 import { Coupon, ICoupon } from "../models/coupon.model";
 
@@ -17,6 +18,17 @@ export class CouponService {
     const createdCoupon = await newCoupon.save();
 
     return createdCoupon;
+  }
+
+  public async updateCoupon(
+    couponId: string,
+    updateCoupon: IUpdateCouponDto
+  ): Promise<void> {
+    await Coupon.findByIdAndUpdate(couponId, updateCoupon);
+  }
+
+  public async deleteCoupon(couponId: string): Promise<void> {
+    await Coupon.deleteOne({ _id: couponId });
   }
 
   public async isCouponExist(couponCode: string): Promise<boolean> {
