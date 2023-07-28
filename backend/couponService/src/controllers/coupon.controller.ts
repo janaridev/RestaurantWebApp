@@ -1,17 +1,29 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { CouponService } from "../services/coupon.service";
-import { ICoupon } from "models/coupon.model";
-import { CreateCouponDto } from "../dtos/createCoupon.dto";
+import { ICreateCouponDto } from "../dtos/createCoupon.dto";
 
 const couponService = new CouponService();
 
 export class CouponController {
-  public async createCoupon(
-    request: FastifyRequest<{ Body: CreateCouponDto }>,
+  public async getCoupons(
+    request: FastifyRequest,
     reply: FastifyReply
   ): Promise<void> {
     try {
-      const coupon: CreateCouponDto = request.body;
+      const coupons = await couponService.getCoupons();
+      reply.code(200).send(coupons);
+    } catch (error) {
+      console.log(`--> Error while creating coupon: ${error}`);
+      reply.code(500).send({ error: "Failed to fetch coupons." });
+    }
+  }
+
+  public async createCoupon(
+    request: FastifyRequest<{ Body: ICreateCouponDto }>,
+    reply: FastifyReply
+  ): Promise<void> {
+    try {
+      const coupon: ICreateCouponDto = request.body;
       if (!coupon.couponCode || !coupon.discountAmount) {
         reply.code(400).send({ error: "Provide more information." });
         return;
@@ -27,7 +39,7 @@ export class CouponController {
 
       const createdCoupon = await couponService.createCoupon(coupon);
 
-      reply.code(201).send({ createdCoupon });
+      reply.code(201).send(createdCoupon);
     } catch (error) {
       console.log(`--> Error while creating coupon: ${error}`);
       reply.code(400).send({ error: "Failed to create coupon." });
