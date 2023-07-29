@@ -1,198 +1,186 @@
-import { FastifyRequest } from "fastify";
+import { FastifyRequest, FastifyReply } from "fastify";
 import { CouponService } from "../services/coupon.service";
 import { ICreateCouponDto } from "../dtos/createCoupon.dto";
-import { ResponseDto } from "../dtos/response.dto";
+import { ApiResponseHandler } from "../models/responses/apiResponseHandler";
 import { IUpdateCouponDto } from "../dtos/updateCoupon.dto";
 
 const couponService = new CouponService();
-const response = new ResponseDto();
 
 export class CouponController {
-  public async getCoupons(): Promise<ResponseDto> {
+  public async getCoupons(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const coupons = await couponService.getCoupons();
 
-      response.isSuccess = true;
-      response.statusCode = 200;
-      response.result = coupons;
+      ApiResponseHandler.sendSuccessResponse(reply, 200, coupons);
     } catch (error) {
       console.log(`--> Error while fetching coupons: ${error}`);
 
-      response.isSuccess = false;
-      response.statusCode = 500;
-      response.result = { error: "Error while fetching coupons" };
+      ApiResponseHandler.sendErrorResponse(
+        reply,
+        500,
+        "Error while fetching coupons"
+      );
     }
-    return response;
   }
 
   public async getCouponById(
-    request: FastifyRequest<{ Params: { couponId: string } }>
-  ): Promise<ResponseDto> {
+    request: FastifyRequest<{ Params: { couponId: string } }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const { couponId } = request.params;
       if (!couponId) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Coupon id is null." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(reply, 400, "Coupon id is null.");
       }
 
       const coupon = await couponService.getCouponById(couponId);
       if (coupon === null) {
-        response.isSuccess = false;
-        response.statusCode = 404;
-        response.result = { error: "Coupon was not found." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          404,
+          "Coupon was not found."
+        );
       }
 
-      response.isSuccess = true;
-      response.statusCode = 200;
-      response.result = coupon;
+      ApiResponseHandler.sendSuccessResponse(reply, 200, coupon);
     } catch (error) {
       console.log(`--> Error while fetching coupon: ${error}`);
-
-      response.isSuccess = false;
-      response.statusCode = 500;
-      response.result = { error: "Error while fetching coupon" };
+      ApiResponseHandler.sendErrorResponse(
+        reply,
+        500,
+        "Error while fetching coupon"
+      );
     }
-    return response;
   }
 
   public async createCoupon(
-    request: FastifyRequest<{ Body: ICreateCouponDto }>
-  ): Promise<ResponseDto> {
+    request: FastifyRequest<{ Body: ICreateCouponDto }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const coupon: ICreateCouponDto = request.body;
       if (!coupon.couponCode || !coupon.discountAmount) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Provide more information." };
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          400,
+          "Provide more information."
+        );
       }
 
       const isCouponExist = await couponService.isCouponExist(
         coupon.couponCode
       );
       if (isCouponExist) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Coupon already exists." };
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          400,
+          "Coupon already exists."
+        );
       }
 
       const createdCoupon = await couponService.createCoupon(coupon);
 
-      response.isSuccess = true;
-      response.statusCode = 201;
-      response.result = createdCoupon;
+      ApiResponseHandler.sendSuccessResponse(reply, 201, createdCoupon);
     } catch (error) {
       console.log(`--> Error while creating coupon: ${error}`);
-
-      response.isSuccess = false;
-      response.statusCode = 500;
-      response.result = { error: "Failed to create coupon." };
+      ApiResponseHandler.sendErrorResponse(
+        reply,
+        500,
+        "Failed to create coupon."
+      );
     }
-    return response;
   }
 
   public async updateCoupon(
     request: FastifyRequest<{
       Body: IUpdateCouponDto;
       Params: { couponId: string };
-    }>
-  ): Promise<ResponseDto> {
+    }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const { couponId } = request.params;
       if (!couponId) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Coupon id is null." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(reply, 400, "Coupon id is null.");
       }
 
       const isCouponIdExist = await couponService.getCouponById(couponId);
       if (isCouponIdExist === null) {
-        response.isSuccess = false;
-        response.statusCode = 404;
-        response.result = { error: "Coupon was not found." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          404,
+          "Coupon was not found."
+        );
       }
 
       const coupon: IUpdateCouponDto = request.body;
       if (!coupon.couponCode || !coupon.discountAmount) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Provide more information." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          400,
+          "Provide more information."
+        );
       }
 
       const isCouponCodeExist = await couponService.isCouponExist(
         coupon.couponCode
       );
       if (isCouponCodeExist) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Coupon code already exists." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          400,
+          "Coupon code already exists."
+        );
       }
 
       await couponService.updateCoupon(couponId, coupon);
 
-      response.isSuccess = true;
-      response.statusCode = 200;
-      response.result = { message: "Coupon was updated." };
+      ApiResponseHandler.sendSuccessResponse(reply, 200, "Coupon was updated.");
     } catch (error) {
       console.log(`--> Error while updating coupon: ${error}`);
 
-      response.isSuccess = false;
-      response.statusCode = 500;
-      response.result = { error: "Failed to update coupon." };
+      ApiResponseHandler.sendErrorResponse(
+        reply,
+        500,
+        "Failed to update coupon."
+      );
     }
-    return response;
   }
 
   public async deleteCoupon(
     request: FastifyRequest<{
       Params: { couponId: string };
-    }>
-  ): Promise<ResponseDto> {
+    }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const { couponId } = request.params;
       if (!couponId) {
-        response.isSuccess = false;
-        response.statusCode = 400;
-        response.result = { error: "Coupon id is null." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(reply, 400, "Coupon id is null.");
       }
 
       const isCouponIdExist = await couponService.getCouponById(couponId);
       if (isCouponIdExist === null) {
-        response.isSuccess = false;
-        response.statusCode = 404;
-        response.result = { error: "Coupon was not found." };
-
-        return response;
+        ApiResponseHandler.sendErrorResponse(
+          reply,
+          404,
+          "Coupon was not found."
+        );
       }
 
       await couponService.deleteCoupon(couponId);
 
-      response.isSuccess = true;
-      response.statusCode = 200;
-      response.result = { message: "Coupon was deleted." };
+      ApiResponseHandler.sendSuccessResponse(reply, 200, "Coupon was deleted.");
     } catch (error) {
       console.log(`--> Error while deleting coupon: ${error}`);
-
-      response.isSuccess = false;
-      response.statusCode = 500;
-      response.result = { error: "Failed to delete coupon." };
+      ApiResponseHandler.sendErrorResponse(
+        reply,
+        500,
+        "Failed to delete coupon."
+      );
     }
-    return response;
   }
 }
