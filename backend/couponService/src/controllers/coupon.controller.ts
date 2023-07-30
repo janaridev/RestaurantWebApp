@@ -6,6 +6,23 @@ import { IUpdateCouponDto } from "../dtos/updateCoupon.dto";
 
 const couponService = new CouponService();
 
+const handleError = (
+  reply: FastifyReply,
+  statusCode: number,
+  errorMessage: string
+) => {
+  console.log(`--> Error: ${errorMessage}`);
+  ApiResponseHandler.sendErrorResponse(reply, statusCode, errorMessage);
+};
+
+const sendSuccessResponse = (
+  reply: FastifyReply,
+  statusCode: number,
+  data: any
+) => {
+  ApiResponseHandler.sendSuccessResponse(reply, statusCode, data);
+};
+
 export class CouponController {
   public async getCoupons(
     request: FastifyRequest,
@@ -13,16 +30,9 @@ export class CouponController {
   ): Promise<void> {
     try {
       const coupons = await couponService.getCoupons();
-
-      ApiResponseHandler.sendSuccessResponse(reply, 200, coupons);
+      sendSuccessResponse(reply, 200, coupons);
     } catch (error) {
-      console.log(`--> Error while fetching coupons: ${error}`);
-
-      ApiResponseHandler.sendErrorResponse(
-        reply,
-        500,
-        "Error while fetching coupons"
-      );
+      handleError(reply, 500, "Error while fetching coupons");
     }
   }
 
@@ -33,26 +43,19 @@ export class CouponController {
     try {
       const { couponId } = request.params;
       if (!couponId) {
-        ApiResponseHandler.sendErrorResponse(reply, 400, "Coupon id is null.");
+        handleError(reply, 400, "Coupon id is null.");
+        return;
       }
 
       const coupon = await couponService.getCouponById(couponId);
       if (coupon === null) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          404,
-          "Coupon was not found."
-        );
+        handleError(reply, 404, "Coupon was not found.");
+        return;
       }
 
-      ApiResponseHandler.sendSuccessResponse(reply, 200, coupon);
+      sendSuccessResponse(reply, 200, coupon);
     } catch (error) {
-      console.log(`--> Error while fetching coupon: ${error}`);
-      ApiResponseHandler.sendErrorResponse(
-        reply,
-        500,
-        "Error while fetching coupon"
-      );
+      handleError(reply, 500, "Error while fetching coupon");
     }
   }
 
@@ -63,34 +66,22 @@ export class CouponController {
     try {
       const coupon: ICreateCouponDto = request.body;
       if (!coupon.couponCode || !coupon.discountAmount) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          400,
-          "Provide more information."
-        );
+        handleError(reply, 400, "Provide more information.");
+        return;
       }
 
       const isCouponExist = await couponService.isCouponExist(
         coupon.couponCode
       );
       if (isCouponExist) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          400,
-          "Coupon already exists."
-        );
+        handleError(reply, 400, "Coupon already exists.");
+        return;
       }
 
       const createdCoupon = await couponService.createCoupon(coupon);
-
-      ApiResponseHandler.sendSuccessResponse(reply, 201, createdCoupon);
+      sendSuccessResponse(reply, 201, createdCoupon);
     } catch (error) {
-      console.log(`--> Error while creating coupon: ${error}`);
-      ApiResponseHandler.sendErrorResponse(
-        reply,
-        500,
-        "Failed to create coupon."
-      );
+      handleError(reply, 500, "Failed to create coupon.");
     }
   }
 
@@ -104,83 +95,58 @@ export class CouponController {
     try {
       const { couponId } = request.params;
       if (!couponId) {
-        ApiResponseHandler.sendErrorResponse(reply, 400, "Coupon id is null.");
+        handleError(reply, 400, "Coupon id is null.");
+        return;
       }
 
       const isCouponIdExist = await couponService.getCouponById(couponId);
       if (isCouponIdExist === null) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          404,
-          "Coupon was not found."
-        );
+        handleError(reply, 404, "Coupon was not found.");
+        return;
       }
 
       const coupon: IUpdateCouponDto = request.body;
       if (!coupon.couponCode || !coupon.discountAmount) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          400,
-          "Provide more information."
-        );
+        handleError(reply, 400, "Provide more information.");
+        return;
       }
 
       const isCouponCodeExist = await couponService.isCouponExist(
         coupon.couponCode
       );
       if (isCouponCodeExist) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          400,
-          "Coupon code already exists."
-        );
+        handleError(reply, 400, "Coupon code already exists.");
+        return;
       }
 
       await couponService.updateCoupon(couponId, coupon);
-
-      ApiResponseHandler.sendSuccessResponse(reply, 200, "Coupon was updated.");
+      sendSuccessResponse(reply, 200, "Coupon was updated.");
     } catch (error) {
-      console.log(`--> Error while updating coupon: ${error}`);
-
-      ApiResponseHandler.sendErrorResponse(
-        reply,
-        500,
-        "Failed to update coupon."
-      );
+      handleError(reply, 500, "Failed to update coupon.");
     }
   }
 
   public async deleteCoupon(
-    request: FastifyRequest<{
-      Params: { couponId: string };
-    }>,
+    request: FastifyRequest<{ Params: { couponId: string } }>,
     reply: FastifyReply
   ): Promise<void> {
     try {
       const { couponId } = request.params;
       if (!couponId) {
-        ApiResponseHandler.sendErrorResponse(reply, 400, "Coupon id is null.");
+        handleError(reply, 400, "Coupon id is null.");
+        return;
       }
 
       const isCouponIdExist = await couponService.getCouponById(couponId);
       if (isCouponIdExist === null) {
-        ApiResponseHandler.sendErrorResponse(
-          reply,
-          404,
-          "Coupon was not found."
-        );
+        handleError(reply, 404, "Coupon was not found.");
+        return;
       }
 
       await couponService.deleteCoupon(couponId);
-
-      ApiResponseHandler.sendSuccessResponse(reply, 200, "Coupon was deleted.");
+      sendSuccessResponse(reply, 200, "Coupon was deleted.");
     } catch (error) {
-      console.log(`--> Error while deleting coupon: ${error}`);
-      ApiResponseHandler.sendErrorResponse(
-        reply,
-        500,
-        "Failed to delete coupon."
-      );
+      handleError(reply, 500, "Failed to delete coupon.");
     }
   }
 }
