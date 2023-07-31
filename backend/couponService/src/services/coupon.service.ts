@@ -4,12 +4,12 @@ import { Coupon, ICoupon } from "../models/coupon.model";
 
 export class CouponService {
   public async getCoupons(): Promise<Array<ICoupon>> {
-    const coupons = await Coupon.find().select("-__v");
+    const coupons = await Coupon.find();
     return coupons;
   }
 
   public async getCouponById(couponId: string): Promise<ICoupon> {
-    const coupon = await Coupon.findById(couponId).select("-__v");
+    const coupon = await Coupon.findById(couponId);
     return coupon;
   }
 
