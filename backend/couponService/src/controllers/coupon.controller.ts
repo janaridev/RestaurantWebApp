@@ -4,8 +4,6 @@ import { ICreateCouponDto } from "../dtos/createCoupon.dto";
 import { ApiResponseHandler } from "../models/responses/apiResponseHandler";
 import { IUpdateCouponDto } from "../dtos/updateCoupon.dto";
 
-const couponService = new CouponService();
-
 const handleError = (
   reply: FastifyReply,
   statusCode: number,
@@ -24,12 +22,17 @@ const sendSuccessResponse = (
 };
 
 export class CouponController {
+  couponService: CouponService;
+  constructor(couponService: CouponService) {
+    this.couponService = couponService;
+  }
+
   public async getCoupons(
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<void> {
     try {
-      const coupons = await couponService.getCoupons();
+      const coupons = await this.couponService.getCoupons();
       sendSuccessResponse(reply, 200, coupons);
     } catch (error) {
       handleError(reply, 500, "Error while fetching coupons");
@@ -47,7 +50,7 @@ export class CouponController {
         return;
       }
 
-      const coupon = await couponService.getCouponById(couponId);
+      const coupon = await this.couponService.getCouponById(couponId);
       if (coupon === null) {
         handleError(reply, 404, "Coupon was not found.");
         return;
@@ -70,7 +73,7 @@ export class CouponController {
         return;
       }
 
-      const isCouponExist = await couponService.isCouponExist(
+      const isCouponExist = await this.couponService.isCouponExist(
         coupon.couponCode
       );
       if (isCouponExist) {
@@ -78,7 +81,7 @@ export class CouponController {
         return;
       }
 
-      const createdCoupon = await couponService.createCoupon(coupon);
+      const createdCoupon = await this.couponService.createCoupon(coupon);
       sendSuccessResponse(reply, 201, createdCoupon);
     } catch (error) {
       handleError(reply, 500, "Failed to create coupon.");
@@ -99,7 +102,7 @@ export class CouponController {
         return;
       }
 
-      const isCouponIdExist = await couponService.getCouponById(couponId);
+      const isCouponIdExist = await this.couponService.getCouponById(couponId);
       if (isCouponIdExist === null) {
         handleError(reply, 404, "Coupon was not found.");
         return;
@@ -111,7 +114,7 @@ export class CouponController {
         return;
       }
 
-      const isCouponCodeExist = await couponService.isCouponExist(
+      const isCouponCodeExist = await this.couponService.isCouponExist(
         coupon.couponCode
       );
       if (isCouponCodeExist) {
@@ -119,7 +122,7 @@ export class CouponController {
         return;
       }
 
-      await couponService.updateCoupon(couponId, coupon);
+      await this.couponService.updateCoupon(couponId, coupon);
       sendSuccessResponse(reply, 200, "Coupon was updated.");
     } catch (error) {
       handleError(reply, 500, "Failed to update coupon.");
@@ -137,13 +140,13 @@ export class CouponController {
         return;
       }
 
-      const isCouponIdExist = await couponService.getCouponById(couponId);
+      const isCouponIdExist = await this.couponService.getCouponById(couponId);
       if (isCouponIdExist === null) {
         handleError(reply, 404, "Coupon was not found.");
         return;
       }
 
-      await couponService.deleteCoupon(couponId);
+      await this.couponService.deleteCoupon(couponId);
       sendSuccessResponse(reply, 200, "Coupon was deleted.");
     } catch (error) {
       handleError(reply, 500, "Failed to delete coupon.");

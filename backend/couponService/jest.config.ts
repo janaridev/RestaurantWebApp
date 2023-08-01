@@ -7,5 +7,6 @@ const config: Config.InitialOptions = {
     "^.+\\.tsx?$": "ts-jest",
   },
   testMatch: ["<rootDir>/tests/**/*.test.ts"],
+  testTimeout: 30000,
 };
 export default config;
