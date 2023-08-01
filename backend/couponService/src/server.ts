@@ -4,7 +4,7 @@ import Fastify, { FastifyInstance } from "fastify";
 function buildServer() {
   const server: FastifyInstance = Fastify();
 
-  registryRoutes(server);
+  server.register(registryRoutes, { prefix: "/api" });
 
   return server;
 }
