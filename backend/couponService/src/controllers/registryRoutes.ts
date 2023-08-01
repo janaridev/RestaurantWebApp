@@ -11,6 +11,4 @@ export async function registryRoutes(server: FastifyInstance): Promise<void> {
   server.post("/coupons", couponController.createCoupon);
   server.put("/coupons/:couponId", couponController.updateCoupon);
   server.delete("/coupons/:couponId", couponController.deleteCoupon);
-
-  return;
 }
