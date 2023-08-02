@@ -6,9 +6,19 @@ export async function registryRoutes(server: FastifyInstance): Promise<void> {
   const couponService = new CouponService();
   const couponController = new CouponController(couponService);
 
-  server.get("/coupons", couponController.getCoupons);
-  server.get("/coupons/:couponId", couponController.getCouponById);
-  server.post("/coupons", couponController.createCoupon);
-  server.put("/coupons/:couponId", couponController.updateCoupon);
-  server.delete("/coupons/:couponId", couponController.deleteCoupon);
+  // In your route registration:
+  server.get("/coupons", couponController.getCoupons.bind(couponController));
+  server.get(
+    "/coupons/:couponId",
+    couponController.getCouponById.bind(couponController)
+  );
+  server.post("/coupons", couponController.createCoupon.bind(couponController));
+  server.put(
+    "/coupons/:couponId",
+    couponController.updateCoupon.bind(couponController)
+  );
+  server.delete(
+    "/coupons/:couponId",
+    couponController.deleteCoupon.bind(couponController)
+  );
 }

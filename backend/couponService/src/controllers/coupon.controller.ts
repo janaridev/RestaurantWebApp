@@ -22,7 +22,7 @@ const sendSuccessResponse = (
 };
 
 export class CouponController {
-  couponService: CouponService;
+  private readonly couponService: CouponService;
   constructor(couponService: CouponService) {
     this.couponService = couponService;
   }
