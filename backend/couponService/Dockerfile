@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json ./
 COPY . .
 
-RUN npm install -g typescript && npm install
+RUN npm install -g typescript && npm ci
 RUN npm run build
 
 ENV NODE_ENV=production
