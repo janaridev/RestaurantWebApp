@@ -10,5 +10,12 @@ services:
       - mongodbdata:/data/db
     hostname: mongodb
 
+  couponservice:
+    image: csharpjanari/couponservice:latest
+    container_name: couponservice
+    hostname: couponservice
+    ports:
+      - 3010:3010
+
 volumes:
   mongodbdata:
