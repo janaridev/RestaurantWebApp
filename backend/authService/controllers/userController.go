@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"authService/dtos"
 	"authService/initializers"
 	"authService/models"
 	"net/http"
@@ -13,31 +14,39 @@ import (
 )
 
 func Signup(c *gin.Context) {
-	var body struct {
-		Email    string
-		Password string
-	}
+	var input dtos.SignupDto
 
-	if c.Bind(&body) != nil {
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to read body",
 		})
 		return
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	var existingUser models.User
+	if err := initializers.DB.Where("email = ?", input.Email).First(&existingUser).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"error": "User with the same email already exists",
+		})
+		return
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to hash password",
 		})
 		return
 	}
 
-	user := models.User{Email: body.Email, Password: string(hash)}
-	result := initializers.DB.Create(&user)
+	user := models.User{
+		Email:    input.Email,
+		Password: string(hash),
+	}
 
+	result := initializers.DB.Create(&user)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to create user",
 		})
 		return
