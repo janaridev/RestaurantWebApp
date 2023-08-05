@@ -28,6 +28,7 @@ func Create(body *dtos.UserDto) error {
 	user := models.User{
 		Email:    body.Email,
 		Password: string(hash),
+		Role:     "User",
 	}
 
 	result := initializers.DB.Create(&user)
@@ -49,8 +50,9 @@ func Login(body *dtos.UserDto) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"sub":  user.ID,
+		"exp":  time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"role": user.Role,
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {

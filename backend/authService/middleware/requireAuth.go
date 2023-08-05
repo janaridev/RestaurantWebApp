@@ -38,8 +38,14 @@ func RequireAuth(c *gin.Context) {
 			return
 		}
 
+		userID, ok := claims["sub"].(string)
+		if !ok {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
 		var user models.User
-		if err := initializers.DB.First(&user, claims["sub"]).Error; err != nil {
+		if err := initializers.DB.Where("id = ?", userID).First(&user).Error; err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}

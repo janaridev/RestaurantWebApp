@@ -22,6 +22,7 @@ services:
       - mongodbdata:/data/db
     hostname: mongodb
 
+  # Services
   couponservice:
     image: csharpjanari/couponservice:latest
     container_name: couponservice

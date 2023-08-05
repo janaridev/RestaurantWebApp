@@ -1,9 +1,13 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
-	Email 	 string `gorm:"unique"`
+	ID       string `gorm:"type:uuid;default:gen_random_uuid()"`
+	Email    string `gorm:"unique"`
 	Password string
+	Role     string // Admin/User
 }
