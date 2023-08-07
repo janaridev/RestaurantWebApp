@@ -1,6 +1,18 @@
 version: "3.8"
 
 services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "6000:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+        POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    hostname: postgres
+
   mongodb:
     image: mongo
     container_name: mongodb
@@ -10,6 +22,16 @@ services:
       - mongodbdata:/data/db
     hostname: mongodb
 
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - redis_data:/data
+
+  # Services
   couponservice:
     image: csharpjanari/couponservice:latest
     container_name: couponservice
@@ -17,5 +39,14 @@ services:
     ports:
       - 3010:3010
 
+  authservice:
+    image: csharpjanari/authservice:latest
+    container_name: authservice
+    hostname: authservice
+    ports:
+      - 3000:3000
+
 volumes:
+  postgres_data:
   mongodbdata:
+  redis_data:
