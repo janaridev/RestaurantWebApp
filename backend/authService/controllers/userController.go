@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"authService/dtos"
+	"authService/models/responses"
 	"authService/services"
 	"net/http"
 
@@ -12,45 +13,43 @@ func Signup(c *gin.Context) {
 	var body dtos.UserDto
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
+		errorResponse := responses.SendErrorResponse(false, 400, "Failed to read body.")
+		c.JSON(http.StatusBadRequest, errorResponse)
 		return
 	}
 
 	err := services.Create(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		errorResponse := responses.SendErrorResponse(false, 400, err.Error())
+		c.JSON(http.StatusBadRequest, errorResponse)
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{})
+	successResponse := responses.SendSuccessResponse(true, 201, nil)
+	c.JSON(http.StatusCreated, successResponse)
 }
 
 func Login(c *gin.Context) {
 	var body dtos.UserDto
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
+		errorResponse := responses.SendErrorResponse(false, 400, "Failed to read body.")
+		c.JSON(http.StatusBadRequest, errorResponse)
 		return
 	}
 
 	tokenString, err := services.Login(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		errorResponse := responses.SendErrorResponse(false, 400, err.Error())
+		c.JSON(http.StatusBadRequest, errorResponse)
 		return
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
 
-	c.JSON(http.StatusOK, gin.H{})
+	successResponse := responses.SendSuccessResponse(true, 200, nil)
+	c.JSON(http.StatusOK, successResponse)
 }
 
 func Validate(c *gin.Context) {
