@@ -39,6 +39,13 @@ services:
     ports:
       - 3010:3010
 
+  authservice:
+    image: csharpjanari/authservice:latest
+    container_name: authservice
+    hostname: authservice
+    ports:
+      - 3000:3000
+
 volumes:
   postgres_data:
   mongodbdata:

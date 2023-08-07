@@ -1,0 +1,27 @@
+# Exclude common editor and system files
+.vscode/
+.idea/
+*.swp
+*.bak
+*~
+
+# Exclude build artifacts
+bin/
+*.exe
+*.exe~
+
+# Exclude Go dependencies and build cache
+vendor/
+*.test
+*.prof
+*.out
+
+# Exclude version control directories
+.git/
+.hg/
+.svn/
+
+# Exclude local development files
+*.log
+.env
+.DS_Store
