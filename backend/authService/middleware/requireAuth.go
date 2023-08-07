@@ -3,9 +3,9 @@ package middleware
 import (
 	"authService/initializers"
 	"authService/models"
+	"authService/utils"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,12 +19,27 @@ func RequireAuth(c *gin.Context) {
 		return
 	}
 
+	ctx, client, err := utils.ConnectToRedis()
+	if err != nil {
+		fmt.Println("Error connecting to Redis:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	defer client.Close()
+
+	secret, err := client.Get(*ctx, "SECRET").Result()
+	if err != nil {
+		fmt.Println("Error getting key:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	fmt.Println("Value:", secret)
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return []byte(os.Getenv("SECRET")), nil
+		return []byte(secret), nil
 	})
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)

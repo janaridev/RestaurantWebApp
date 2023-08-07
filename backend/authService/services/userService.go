@@ -4,8 +4,9 @@ import (
 	"authService/dtos"
 	"authService/initializers"
 	"authService/models"
+	"authService/utils"
 	"errors"
-	"os"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -49,12 +50,26 @@ func Login(body *dtos.UserDto) (string, error) {
 		return "", errors.New("Invalid email or password")
 	}
 
+	ctx, client, err := utils.ConnectToRedis()
+	if err != nil {
+		return "", errors.New("Something went wrong: " + err.Error())
+	}
+	defer client.Close()
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  user.ID,
 		"exp":  time.Now().Add(time.Hour * 24 * 30).Unix(),
 		"role": user.Role,
 	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
+
+	secret, err := client.Get(*ctx, "SECRET").Result()
+	if err != nil {
+		fmt.Println("Error getting key:", err)
+		return "", errors.New("Failed to get key")
+	}
+	fmt.Println("Value:", secret)
+
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", errors.New("Failed to create token")
 	}
