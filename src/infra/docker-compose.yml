@@ -22,15 +22,6 @@ services:
       - mongodbdata:/data/db
     hostname: mongodb
 
-  redis:
-    image: redis
-    container_name: redis
-    ports:
-      - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    volumes:
-      - redis_data:/data
-
   # Services
   couponservice:
     image: csharpjanari/couponservice:latest
@@ -38,13 +29,6 @@ services:
     hostname: couponservice
     ports:
       - 3010:3010
-
-  authservice:
-    image: csharpjanari/authservice:latest
-    container_name: authservice
-    hostname: authservice
-    ports:
-      - 3000:3000
 
 volumes:
   postgres_data:
