@@ -1,18 +1,6 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    ports:
-      - "6000:5432"
-    environment:
-      - POSTGRES_PASSWORD=postgres
-        POSTGRES_DB=postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    hostname: postgres
-
   mongodb:
     image: mongo
     container_name: mongodb
@@ -31,6 +19,4 @@ services:
       - 3010:3010
 
 volumes:
-  postgres_data:
   mongodbdata:
-  redis_data:
