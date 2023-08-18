@@ -13,6 +13,17 @@ const CouponIndex = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const navigate = useNavigate();
 
+  const deleteCoupon = async (couponId: string) => {
+    try {
+      await axios.delete(`http://localhost:3010/api/coupons/${couponId}`);
+      // Notification all is good
+      getCoupons();
+    } catch (e) {
+      console.log(e);
+      // Notification error
+    }
+  };
+
   const getCoupons = async () => {
     try {
       const response = await axios.get<{ result: Coupon[] }>(
@@ -81,7 +92,10 @@ const CouponIndex = () => {
                 <td>{formatCurrency(coupon.discountAmount)}</td>
                 <td>{formatCurrency(coupon.minAmount)}</td>
                 <td>
-                  <a className="btn btn-danger">
+                  <a
+                    className="btn btn-danger"
+                    onClick={() => deleteCoupon(coupon._id)}
+                  >
                     <i className="bi bi-trash"></i>
                   </a>
                 </td>
