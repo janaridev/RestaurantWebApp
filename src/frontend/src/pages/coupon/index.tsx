@@ -1,6 +1,7 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Coupon {
   _id: string;
@@ -16,11 +17,39 @@ const CouponIndex = () => {
   const deleteCoupon = async (couponId: string) => {
     try {
       await axios.delete(`http://localhost:3010/api/coupons/${couponId}`);
-      // Notification all is good
+
+      toast.success("Coupon deleted!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       getCoupons();
-    } catch (e) {
-      console.log(e);
-      // Notification error
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        console.error("Error creating coupon:", axiosError);
+        const response: AxiosResponse<any> | undefined = axiosError.response;
+        const errorMessage = response?.data?.error || "An error occurred";
+
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        console.error("Unknown error:", error);
+        toast.error("An error occurred");
+      }
     }
   };
 

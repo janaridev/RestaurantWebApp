@@ -4,6 +4,8 @@ import Navbar from "./pages/navbar";
 import CouponIndex from "./pages/coupon";
 import { Container } from "react-bootstrap";
 import CreateCoupon from "./pages/coupon/CreateCoupon";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
@@ -17,6 +19,7 @@ const App = () => {
           <Route path="/coupon" element={<CouponIndex />} />
           <Route path="/coupon/create" element={<CreateCoupon />} />
         </Routes>
+        <ToastContainer />
       </Container>
     </>
   );

@@ -1,7 +1,8 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { toast } from "react-toastify";
 
 interface CouponFormValues {
   couponCode: string;
@@ -29,17 +30,42 @@ const CreateCoupon = () => {
 
   const handleSubmit = async (values: CouponFormValues) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3010/api/coupons",
-        values
-      );
-      // Sweet Alert is ok
+      await axios.post("http://localhost:3010/api/coupons", values);
+
+      toast.success("Coupon created!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
 
       // Navigate back to the coupon list page
       navigate("/coupon");
     } catch (error) {
-      console.error("Error creating coupon:", error);
-      // Sweet alert, error
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        console.error("Error creating coupon:", axiosError);
+        const response: AxiosResponse<any> | undefined = axiosError.response;
+        const errorMessage = response?.data?.error || "An error occurred";
+
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        console.error("Unknown error:", error);
+        toast.error("An error occurred");
+      }
     }
   };
 
