@@ -7,16 +7,6 @@
 
 <h2>Tech Stacks :</h2>
 
-<h4>Auth Service :</h4>
-<ul>
-    <li>Go</li>
-    <li>Gin</li>
-    <li>Postgres</li>
-    <li>Gorm</li>
-    <li>Redis</li>
-    <li>Docker</li>
-</ul>
-
 <h4>Coupon Service :</h4>
 <ul>
     <li>Node.js</li>

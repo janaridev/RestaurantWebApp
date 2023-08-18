@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodbdata:/data/db
+    hostname: mongodb
+
+  # Services
+  couponservice:
+    image: csharpjanari/couponservice:latest
+    container_name: couponservice
+    hostname: couponservice
+    ports:
+      - 3010:3010
+
+volumes:
+  mongodbdata:
