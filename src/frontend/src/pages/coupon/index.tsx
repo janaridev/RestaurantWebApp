@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Coupon {
   _id: string;
@@ -10,6 +11,7 @@ interface Coupon {
 
 const CouponIndex = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const navigate = useNavigate();
 
   const getCoupons = async () => {
     try {
@@ -54,7 +56,10 @@ const CouponIndex = () => {
       <div className="card-body p-4">
         <div className="row pb-3">
           <div className="col-6"></div>
-          <div className="col-6 text-end">
+          <div
+            className="col-6 text-end"
+            onClick={() => navigate("/coupon/create")}
+          >
             <a className="btn btn-outline-primary">
               <i className="bi bi-plus-square"></i> Create New Coupon
             </a>

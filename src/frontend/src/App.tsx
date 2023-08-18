@@ -3,6 +3,7 @@ import HomePage from "./pages/homePage";
 import Navbar from "./pages/navbar";
 import CouponIndex from "./pages/coupon";
 import { Container } from "react-bootstrap";
+import CreateCoupon from "./pages/coupon/CreateCoupon";
 
 const App = () => {
   return (
@@ -11,7 +12,10 @@ const App = () => {
       <Container>
         <Routes>
           <Route path="/" element={<HomePage />} />
+
+          {/* Coupon */}
           <Route path="/coupon" element={<CouponIndex />} />
+          <Route path="/coupon/create" element={<CreateCoupon />} />
         </Routes>
       </Container>
     </>
