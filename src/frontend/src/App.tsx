@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
-  console.log("Test CI");
+  console.log("Test CI!");
   return (
     <>
       <Navbar />
