@@ -42,7 +42,7 @@ jobs:
       - name: Build and Push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: ${{ secrets.DOCKER_USERNAME }}/codeunion_api
+          image: ${{ secrets.DOCKER_USERNAME }}/restaurant_frontend
           tags: latest
           dockerFile: src/frontend/Dockerfile
           registry: docker.io
