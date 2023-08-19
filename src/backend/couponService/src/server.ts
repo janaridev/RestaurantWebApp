@@ -5,7 +5,7 @@ import cors from "@fastify/cors";
 function buildServer() {
   const server: FastifyInstance = Fastify();
   server.register(cors, {
-    origin: `http://localhost:3000`,
+    origin: `http://localhost`,
   });
   server.register(registryRoutes, { prefix: "/api" });
 
