@@ -42,7 +42,7 @@ jobs:
       - name: Build and Push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: ${{ secrets.DOCKER_USERNAME }}/restaurant_frontend
+          image: ${{ secrets.DOCKER_USERNAME }}/couponservice
           tags: latest
           dockerFile: src/backend/couponService/Dockerfile
           registry: docker.io
