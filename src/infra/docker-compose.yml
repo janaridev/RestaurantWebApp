@@ -1,14 +1,13 @@
 version: "3.8"
 
 services:
-  mongodb:
-    image: mongo
-    container_name: mongodb
+  # Frontend
+  restaurant_frontend:
+    image: csharpjanari/restaurant_frontend
+    container_name: restaurant_frontend
+    hostname: restaurant_frontend
     ports:
-      - 27017:27017
-    volumes:
-      - mongodbdata:/data/db
-    hostname: mongodb
+      - 3000:3000
 
   # Services
   couponservice:
@@ -17,6 +16,16 @@ services:
     hostname: couponservice
     ports:
       - 3010:3010
+
+  # Databases
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodbdata:/data/db
+    hostname: mongodb
 
 volumes:
   mongodbdata:
