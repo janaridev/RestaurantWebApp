@@ -2,8 +2,8 @@ FROM node:18
 
 WORKDIR /app    
 
-COPY package.json package-lock.json ./
-COPY . .
+COPY **/package.json **/package-lock.json ./
+COPY **/. .
 
 RUN npm install -g typescript && npm ci
 
