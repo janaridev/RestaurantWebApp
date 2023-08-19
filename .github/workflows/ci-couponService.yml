@@ -1,4 +1,4 @@
-name: CI-DockerImage
+name: CI-CouponService-Dockerfile
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: CI-DockerImage
+name: CI-Frontend-Dockerfile
 
 on:
   push:
