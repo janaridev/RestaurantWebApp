@@ -18,6 +18,10 @@ const App = () => {
           {/* Coupon */}
           <Route path="/coupon" element={<CouponIndex />} />
           <Route path="/coupon/create" element={<CreateCoupon />} />
+
+          {/* Auth */}
+          <Route path="/register" />
+          <Route path="/login" />
         </Routes>
         <ToastContainer />
       </Container>
