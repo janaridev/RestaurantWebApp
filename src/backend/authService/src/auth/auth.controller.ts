@@ -38,11 +38,11 @@ export async function loginHandler(
   try {
     // find a user by email
     const user = await findUserByEmail(body.email);
-    const parsedId = getParsedId(user._id);
-
     if (!user) {
       return handleError(reply, 401, "Invalid email or password");
     }
+
+    const parsedId = getParsedId(user._id);
 
     // verify password
     const correctPassword = verifyPassword({
