@@ -28,7 +28,7 @@ declare module "@fastify/jwt" {
 function buildServer() {
   const server: FastifyInstance = Fastify();
   server.register(cors, {
-    origin: ["http://127.0.0.1", "http://localhost"],
+    origin: ["http://127.0.0.1", "http://localhost", "http://localhost:3000"],
   });
 
   server.register(jwt, {
