@@ -44,7 +44,7 @@ jobs:
         with:
           image: ${{ secrets.DOCKER_USERNAME }}/restaurant_frontend
           tags: latest
-          dockerFile: src/frontend/Dockerfile
+          dockerFile: src/frontend/Dockerfile.ci
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
