@@ -3,10 +3,17 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setLogin } from "../../state";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 interface LoginFormValues {
   email: string;
   password: string;
+}
+
+interface CustomJwtPayload {
+  email: string;
 }
 
 const loginSchema = yup.object().shape({
@@ -24,10 +31,26 @@ const initialValuesCoupon: LoginFormValues = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
-      await axios.post("http://localhost:3020/api/auth/login", values);
+      const response = await axios.post(
+        "http://localhost:3020/api/auth/login",
+        values
+      );
+
+      const decodedToken: CustomJwtPayload = jwtDecode<CustomJwtPayload>(
+        response.data.result
+      );
+      const email: string = decodedToken.email;
+
+      dispatch(
+        setLogin({
+          email,
+          token: response.data.result,
+        })
+      );
 
       toast.success("Login succeed!", {
         position: "top-right",
