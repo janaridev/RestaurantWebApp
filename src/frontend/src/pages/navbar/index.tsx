@@ -1,4 +1,12 @@
+import { useSelector, useDispatch } from "react-redux";
+import { AuthState, setLogout } from "../../state";
+
 const Navbar = () => {
+  const dispatch = useDispatch();
+
+  const email = useSelector((state: AuthState) => state.email);
+  const token = useSelector((state: AuthState) => state.token);
+
   return (
     <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
       <div className="container-fluid">
@@ -48,18 +56,35 @@ const Navbar = () => {
             </li>
           </ul>
 
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="/login">
-                Login
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/register">
-                Register
-              </a>
-            </li>
-          </ul>
+          {token === null ? (
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <a className="nav-link" href="/login">
+                  Login
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/register">
+                  Register
+                </a>
+              </li>
+            </ul>
+          ) : (
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <a className="nav-link">Hey {email}</a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="/login"
+                  onClick={() => dispatch(setLogout())}
+                >
+                  Logout
+                </a>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </nav>
