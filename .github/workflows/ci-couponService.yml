@@ -44,7 +44,7 @@ jobs:
         with:
           image: ${{ secrets.DOCKER_USERNAME }}/couponservice
           tags: latest
-          dockerFile: src/backend/couponService/Dockerfile
+          dockerFile: src/backend/couponService/Dockerfile.ci
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}

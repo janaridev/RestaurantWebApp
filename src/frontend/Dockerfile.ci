@@ -2,8 +2,8 @@ FROM node:18.16-alpine
 
 WORKDIR /app    
 
-COPY package.json package-lock.json ./
-COPY . .
+COPY src/frontend/package.json src/frontend/package-lock.json ./
+COPY src/frontend/. .
 
 RUN npm install -g typescript && npm ci
 
