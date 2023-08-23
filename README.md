@@ -11,6 +11,7 @@
 <ul>
     <li>React</li>
     <li>Typescript</li>
+    <li>Redux</li>
     <li>Vite</li>   
     <li>Bootstrap</li>
     <li>Docker</li>
