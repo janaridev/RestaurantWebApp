@@ -14,7 +14,6 @@ async function main() {
       host: "0.0.0.0",
       port: Number(PORT),
     });
-    console.log("Test ci for auth service");
 
     console.log(`Server ready at http://localhost:${PORT}`);
   } catch (e) {
