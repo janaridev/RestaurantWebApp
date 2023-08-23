@@ -7,12 +7,31 @@
 
 <h2>Tech Stacks :</h2>
 
+<h4>Frontend :</h4>
+<ul>
+    <li>React</li>
+    <li>Typescript</li>
+    <li>Vite</li>   
+    <li>Bootstrap</li>
+    <li>Docker</li>
+</ul>
+
 <h4>Coupon Service :</h4>
 <ul>
     <li>Node.js</li>
     <li>TypeScript</li>
     <li>Fastify</li>
     <li>Jest</li>
+    <li>MongoDB</li>
+    <li>Mongoose</li>
+    <li>Docker</li>
+</ul>
+
+<h4>Auth Service :</h4>
+<ul>
+    <li>Node.js</li>
+    <li>TypeScript</li>
+    <li>Fastify</li>
     <li>MongoDB</li>
     <li>Mongoose</li>
     <li>Docker</li>
