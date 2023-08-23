@@ -6,6 +6,8 @@ import { Container } from "react-bootstrap";
 import CreateCoupon from "./pages/coupon/CreateCoupon";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 
 const App = () => {
   return (
@@ -20,8 +22,8 @@ const App = () => {
           <Route path="/coupon/create" element={<CreateCoupon />} />
 
           {/* Auth */}
-          <Route path="/register" />
-          <Route path="/login" />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         <ToastContainer />
       </Container>
