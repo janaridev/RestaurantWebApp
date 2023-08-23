@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { loginHandler, registerUserHandler } from "./auth.controller";
 import { fastifyAuthSchema } from "./auth.schemas";
+import { handleError } from "./responses/error";
 
 async function authRoutes(server: FastifyInstance) {
   server.post(
@@ -11,10 +12,7 @@ async function authRoutes(server: FastifyInstance) {
       },
       preValidation: (req, reply, done) => {
         if (typeof req.body.password !== "string") {
-          return reply.code(400).send({
-            error: "Validation error",
-            message: "Password must be a string",
-          });
+          return handleError(reply, 400, "Password must be a string");
         }
         done();
       },
@@ -30,10 +28,7 @@ async function authRoutes(server: FastifyInstance) {
       },
       preValidation: (req, reply, done) => {
         if (typeof req.body.password !== "string") {
-          return reply.code(400).send({
-            error: "Validation error",
-            message: "Password must be a string",
-          });
+          return handleError(reply, 400, "Password must be a string");
         }
         done();
       },

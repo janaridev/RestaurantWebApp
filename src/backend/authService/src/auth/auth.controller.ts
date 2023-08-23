@@ -1,25 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { IAuthDto } from "./dtos/createUser.dto";
 import { registerUser, findUserByEmail, getParsedId } from "./auth.service";
-import { ApiResponseHandler } from "./responses/apiResponseHandler";
 import { verifyPassword } from "../utils/hash";
-
-const handleError = (
-  reply: FastifyReply,
-  statusCode: number,
-  errorMessage: string
-) => {
-  console.log(`--> Error: ${errorMessage}`);
-  ApiResponseHandler.sendErrorResponse(reply, statusCode, errorMessage);
-};
-
-const sendSuccessResponse = (
-  reply: FastifyReply,
-  statusCode: number,
-  data: any
-) => {
-  ApiResponseHandler.sendSuccessResponse(reply, statusCode, data);
-};
+import { handleError } from "./responses/error";
+import { sendSuccessResponse } from "./responses/success";
 
 export async function registerUserHandler(
   request: FastifyRequest<{
