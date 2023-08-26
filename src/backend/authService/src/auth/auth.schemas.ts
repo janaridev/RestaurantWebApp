@@ -1,4 +1,3 @@
-import { FastifyReply, FastifyRequest } from "fastify";
 import { Schema } from "mongoose";
 
 // Mongoose Schema
@@ -12,6 +11,10 @@ export const AuthSchema = new Schema({
     required: true,
   },
   salt: {
+    type: String,
+    required: true,
+  },
+  role: {
     type: String,
     required: true,
   },
