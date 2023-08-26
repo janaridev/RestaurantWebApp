@@ -26,7 +26,7 @@ export const fastifyAuthSchema = {
     type: "object",
     properties: {
       email: { type: "string", format: "email" },
-      password: { type: "string", minLength: 8 },
+      password: { type: "string", minLength: 5 },
     },
     required: ["email", "password"],
   },
