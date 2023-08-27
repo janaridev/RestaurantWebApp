@@ -56,6 +56,7 @@ export async function loginHandler(
       const payload = {
         id: parsedId,
         email: user.email,
+        role: user.role,
         exp: Math.floor(Date.now() / 1000) + 900, // token will expired after 15 min
       };
       return sendSuccessResponse(reply, 200, request.jwt.sign(payload));

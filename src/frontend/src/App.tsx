@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
 import Navbar from "./pages/navbar";
 import CouponIndex from "./pages/coupon";
@@ -8,8 +8,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import { useSelector } from "react-redux";
+import { AuthState } from "./state";
 
 const App = () => {
+  const role = useSelector((state: AuthState) => state.role);
+
   return (
     <>
       <Navbar />
@@ -18,7 +22,10 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
 
           {/* Coupon */}
-          <Route path="/coupon" element={<CouponIndex />} />
+          <Route
+            path="/coupon"
+            element={role === "Admin" ? <CouponIndex /> : <Navigate to="/" />}
+          />
           <Route path="/coupon/create" element={<CreateCoupon />} />
 
           {/* Auth */}

@@ -1,7 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthState } from "../../state";
 
 interface Coupon {
   _id: string;
@@ -13,10 +15,15 @@ interface Coupon {
 const CouponIndex = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const navigate = useNavigate();
+  const token = useSelector((state: AuthState) => state.token);
 
   const deleteCoupon = async (couponId: string) => {
     try {
-      await axios.delete(`http://localhost:3010/api/coupons/${couponId}`);
+      await axios.delete(`http://localhost:3010/api/coupons/${couponId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success("Coupon deleted!", {
         position: "top-right",
@@ -56,7 +63,12 @@ const CouponIndex = () => {
   const getCoupons = async () => {
     try {
       const response = await axios.get<{ result: Coupon[] }>(
-        "http://localhost:3010/api/coupons"
+        "http://localhost:3010/api/coupons",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log(response.data);
       setCoupons(response.data.result);

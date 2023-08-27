@@ -11,6 +11,7 @@ export async function registerUser(input: IAuthDto) {
     email,
     password: hash,
     salt,
+    role: "Client",
   });
 }
 
