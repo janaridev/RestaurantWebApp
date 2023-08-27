@@ -1,6 +1,7 @@
 import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
-import { productSchemas } from "product/product.shemas";
+import { productSchemas } from "./product/product.shemas";
+import { productRoutes } from "./product/product.routes";
 
 function buildServer() {
   const server: FastifyInstance = Fastify();
@@ -11,6 +12,8 @@ function buildServer() {
   for (const schema of [...productSchemas]) {
     server.addSchema(schema);
   }
+
+  server.register(productRoutes, { prefix: "/api/products" });
 
   return server;
 }
