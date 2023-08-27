@@ -2,12 +2,14 @@ import { config } from "dotenv";
 config();
 
 import buildServer from "./server";
+import { connectToMongoDB } from "./utils/dbConnection";
 
 const server = buildServer();
 const PORT = process.env.PORT;
 
 async function main() {
   try {
+    await connectToMongoDB();
     await server.listen({
       host: "0.0.0.0",
       port: Number(PORT),
