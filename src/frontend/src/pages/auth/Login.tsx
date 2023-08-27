@@ -14,13 +14,14 @@ interface LoginFormValues {
 
 interface CustomJwtPayload {
   email: string;
+  role: string;
 }
 
 const loginSchema = yup.object().shape({
   email: yup.string().required("Email is a required field.").email(),
   password: yup
     .string()
-    .min(8, "Password must be at least 8 characters long.")
+    .min(5, "Password must be at least 8 characters long.")
     .required("Password is a required field."),
 });
 
@@ -44,10 +45,12 @@ const Login = () => {
         response.data.result
       );
       const email: string = decodedToken.email;
+      const role: string = decodedToken.role;
 
       dispatch(
         setLogin({
           email,
+          role,
           token: response.data.result,
         })
       );

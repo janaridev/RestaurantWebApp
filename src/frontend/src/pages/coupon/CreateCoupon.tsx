@@ -3,6 +3,8 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { AuthState } from "../../state";
 
 interface CouponFormValues {
   couponCode: string;
@@ -27,10 +29,15 @@ const initialValuesCoupon: CouponFormValues = {
 
 const CreateCoupon = () => {
   const navigate = useNavigate();
+  const token = useSelector((state: AuthState) => state.token);
 
   const handleSubmit = async (values: CouponFormValues) => {
     try {
-      await axios.post("http://localhost:3010/api/coupons", values);
+      await axios.post("http://localhost:3010/api/coupons", values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success("Coupon created!", {
         position: "top-right",

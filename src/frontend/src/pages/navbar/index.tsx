@@ -5,6 +5,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const email = useSelector((state: AuthState) => state.email);
+  const role = useSelector((state: AuthState) => state.role);
   const token = useSelector((state: AuthState) => state.token);
 
   return (
@@ -37,23 +38,25 @@ const Navbar = () => {
                 Privacy
               </a>
             </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                href="#"
-                role="button"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Content Management
-              </a>
-              <div className="dropdown-menu">
-                <a className="dropdown-item" href="/coupon">
-                  Coupon
+            {role === "Admin" && (
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  href="#"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Content Management
                 </a>
-              </div>
-            </li>
+                <div className="dropdown-menu">
+                  <a className="dropdown-item" href="/coupon">
+                    Coupon
+                  </a>
+                </div>
+              </li>
+            )}
           </ul>
 
           {token === null ? (
