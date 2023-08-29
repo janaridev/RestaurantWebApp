@@ -1,0 +1,50 @@
+name: CI-AuthService-Dockerfile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/backend/productService/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/backend/productService/**"
+  workflow_dispatch:
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: setup node
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: cd src/backend/productService/ && npm ci
+      - name: build
+        run: cd src/backend/productService/ && npm run build
+
+  push_to_Docker_Hub:
+    runs-on: ubuntu-latest
+    needs: [build_test]
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      - name: Build and Push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ secrets.DOCKER_USERNAME }}/productservice
+          tags: latest
+          dockerFile: src/backend/authService/Dockerfile.ci
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
