@@ -18,6 +18,13 @@ services:
       - 3000:3000
 
   # Services
+  authservice:
+    image: csharpjanari/authservice:latest
+    container_name: authservice
+    hostname: authservice
+    ports:
+      - 3020:3020
+
   couponservice:
     image: csharpjanari/couponservice:latest
     container_name: couponservice
@@ -25,12 +32,12 @@ services:
     ports:
       - 3010:3010
 
-  authservice:
-    image: csharpjanari/authservice:latest
-    container_name: authservice
-    hostname: authservice
+  productservice:
+    image: csharpjanari/productservice:latest
+    container_name: productservice
+    hostname: productservice
     ports:
-      - 3020:3020
+      - 3030:3030
 
   # Databases
   mongodb:
