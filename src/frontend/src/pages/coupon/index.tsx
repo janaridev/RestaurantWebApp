@@ -19,7 +19,7 @@ const CouponIndex = () => {
 
   const deleteCoupon = async (couponId: string) => {
     try {
-      await axios.delete(`http://localhost:3010/api/coupons/${couponId}`, {
+      await axios.delete(`http://localhost/api/coupons/${couponId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -63,7 +63,7 @@ const CouponIndex = () => {
   const getCoupons = async () => {
     try {
       const response = await axios.get<{ result: Coupon[] }>(
-        "http://localhost:3010/api/coupons",
+        "http://localhost/api/coupons",
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -27,7 +27,7 @@ const Register = () => {
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
-      await axios.post("http://localhost:3020/api/auth", values);
+      await axios.post("http://localhost/api/auth", values);
 
       toast.success("User created!", {
         position: "top-right",

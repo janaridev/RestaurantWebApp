@@ -33,7 +33,7 @@ const CreateCoupon = () => {
 
   const handleSubmit = async (values: CouponFormValues) => {
     try {
-      await axios.post("http://localhost:3010/api/coupons", values, {
+      await axios.post("http://localhost/api/coupons", values, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -37,7 +37,7 @@ const Login = () => {
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const response = await axios.post(
-        "http://localhost:3020/api/auth/login",
+        "http://localhost/api/auth/login",
         values
       );
 
