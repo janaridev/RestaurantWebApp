@@ -17,6 +17,16 @@
     <li>Docker</li>
 </ul>
 
+<h4>Auth Service :</h4>
+<ul>
+    <li>Node.js</li>
+    <li>TypeScript</li>
+    <li>Fastify</li>
+    <li>MongoDB</li>
+    <li>Mongoose</li>
+    <li>Docker</li>
+</ul>
+
 <h4>Coupon Service :</h4>
 <ul>
     <li>Node.js</li>
@@ -28,7 +38,7 @@
     <li>Docker</li>
 </ul>
 
-<h4>Auth Service :</h4>
+<h4>Product Service :</h4>
 <ul>
     <li>Node.js</li>
     <li>TypeScript</li>
@@ -36,4 +46,11 @@
     <li>MongoDB</li>
     <li>Mongoose</li>
     <li>Docker</li>
+</ul>
+
+<h4>Other :</h4>
+<ul>
+    <li>NGINX</li>
+    <li>CI Github-Actions</li>
+    <li>Docker-Compose</li>
 </ul>
