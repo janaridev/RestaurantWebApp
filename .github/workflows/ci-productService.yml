@@ -1,4 +1,4 @@
-name: CI-AuthService-Dockerfile
+name: CI-ProductService-Dockerfile
 
 on:
   push:
