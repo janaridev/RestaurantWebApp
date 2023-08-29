@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import {
   createProductHandler,
+  deleteProductHandler,
   getAllProductsHandler,
   getSingleProductHandler,
 } from "./product.controller";
@@ -20,4 +21,6 @@ export async function productRoutes(server: FastifyInstance) {
     },
     createProductHandler
   );
+
+  server.delete("/:productId", deleteProductHandler);
 }

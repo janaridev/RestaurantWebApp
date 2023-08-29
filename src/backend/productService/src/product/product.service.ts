@@ -12,3 +12,7 @@ export async function getSingleProduct(productId: string) {
 export async function createProduct(input: ProductInput) {
   await Product.create(input);
 }
+
+export async function deleteProduct(productId: string) {
+  await Product.findByIdAndDelete(productId);
+}
