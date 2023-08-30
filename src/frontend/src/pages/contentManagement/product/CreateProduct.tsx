@@ -5,14 +5,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { AuthState } from "../../../state";
-
-interface ProductFormValues {
-  name: string;
-  price: number;
-  description: string;
-  categoryName: string;
-  imageUrl: string;
-}
+import ProductFormValues from "../../../interfaces/Product"
 
 const productSchema = yup.object().shape({
   name: yup.string().required("Required field."),

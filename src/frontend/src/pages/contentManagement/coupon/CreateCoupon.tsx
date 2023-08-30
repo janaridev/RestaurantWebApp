@@ -5,12 +5,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { AuthState } from "../../../state";
-
-interface CouponFormValues {
-  couponCode: string;
-  discountAmount: number;
-  minAmount: number;
-}
+import CouponFormValues from "../../../interfaces/Coupon";
 
 const couponSchema = yup.object().shape({
   couponCode: yup.string().required("Required field."),

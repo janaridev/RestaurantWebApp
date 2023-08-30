@@ -5,16 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthState } from "../../../state";
 import { formatCurrency } from "../../../utils/formatCurrency";
+import Product from "../../../interfaces/Product";
 
-interface Product {
+interface ProductWithId extends Product {
   _id: string;
-  name: string;
-  price: number;
-  categoryName: string;
 }
 
 const ProductIndex = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithId[]>([]);
   const navigate = useNavigate();
   const token = useSelector((state: AuthState) => state.token);
 
@@ -63,7 +61,7 @@ const ProductIndex = () => {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get<{ result: Product[] }>(
+      const response = await axios.get<{ result: ProductWithId[] }>(
         "http://localhost/api/products",
         {
           headers: {

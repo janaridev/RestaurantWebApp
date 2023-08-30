@@ -2,15 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
+import Product from "../../interfaces/Product";
 // import * as yup from "yup";
-
-interface Product {
-  name: string;
-  price: number;
-  description: string;
-  categoryName: string;
-  imageUrl: string;
-}
 
 // interface ProductCountInput {
 //   count: number;

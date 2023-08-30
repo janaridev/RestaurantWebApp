@@ -5,16 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthState } from "../../../state";
 import { formatCurrency } from "../../../utils/formatCurrency";
+import Coupon from "../../../interfaces/Coupon";
 
-interface Coupon {
+interface CouponWithId extends Coupon {
   _id: string;
-  couponCode: string;
-  discountAmount: number;
-  minAmount: number | null;
 }
 
 const CouponIndex = () => {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [coupons, setCoupons] = useState<CouponWithId[]>([]);
   const navigate = useNavigate();
   const token = useSelector((state: AuthState) => state.token);
 
@@ -63,7 +61,7 @@ const CouponIndex = () => {
 
   const getCoupons = async () => {
     try {
-      const response = await axios.get<{ result: Coupon[] }>(
+      const response = await axios.get<{ result: CouponWithId[] }>(
         "http://localhost/api/coupons",
         {
           headers: {

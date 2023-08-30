@@ -1,22 +1,18 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/formatCurrency";
+import Product from "../../interfaces/Product";
 
-interface Product {
+interface ProductWithId extends Product {
   _id: string;
-  name: string;
-  price: number;
-  description: string;
-  categoryName: string;
-  imageUrl: string;
 }
 
 const HomePage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithId[]>([]);
 
   const getProducts = async () => {
     try {
-      const response = await axios.get<{ result: Product[] }>(
+      const response = await axios.get<{ result: ProductWithId[] }>(
         "http://localhost/api/products"
       );
       console.log(response.data);
