@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
-import * as yup from "yup";
+// import * as yup from "yup";
 
 interface Product {
   name: string;
@@ -12,16 +12,16 @@ interface Product {
   imageUrl: string;
 }
 
-interface ProductCountInput {
-  count: number;
-}
+// interface ProductCountInput {
+//   count: number;
+// }
 
-const productCountSchema = yup.object().shape({
-  count: yup
-    .number()
-    .min(1, "Min count of product: 1")
-    .required("Required field."),
-});
+// const productCountSchema = yup.object().shape({
+//   count: yup
+//     .number()
+//     .min(1, "Min count of product: 1")
+//     .required("Required field."),
+// });
 
 const Details = () => {
   const navigate = useNavigate();
