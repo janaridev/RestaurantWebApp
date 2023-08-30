@@ -11,6 +11,7 @@ import Register from "./pages/auth/Register";
 import { useSelector } from "react-redux";
 import { AuthState } from "./state";
 import ProductIndex from "./pages/product";
+import CreateProduct from "./pages/product/CreateProduct";
 
 const App = () => {
   const role = useSelector((state: AuthState) => state.role);
@@ -37,6 +38,10 @@ const App = () => {
           <Route
             path="/product"
             element={role === "Admin" ? <ProductIndex /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/product/create"
+            element={role === "Admin" ? <CreateProduct /> : <Navigate to="/" />}
           />
         </Routes>
         <ToastContainer />
