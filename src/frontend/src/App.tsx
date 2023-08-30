@@ -10,6 +10,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { useSelector } from "react-redux";
 import { AuthState } from "./state";
+import ProductIndex from "./pages/product";
 
 const App = () => {
   const role = useSelector((state: AuthState) => state.role);
@@ -21,16 +22,22 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
 
-          {/* Coupon */}
+          {/* Auth */}
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* ADMIN PANEL */}
+          {/* COUPON */}
           <Route
             path="/coupon"
             element={role === "Admin" ? <CouponIndex /> : <Navigate to="/" />}
           />
           <Route path="/coupon/create" element={<CreateCoupon />} />
-
-          {/* Auth */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          {/* PRODUCT */}
+          <Route
+            path="/product"
+            element={role === "Admin" ? <ProductIndex /> : <Navigate to="/" />}
+          />
         </Routes>
         <ToastContainer />
       </Container>
