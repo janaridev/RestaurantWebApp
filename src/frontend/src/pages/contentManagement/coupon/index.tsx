@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthState } from "../../../state";
+import { formatCurrency } from "../../../utils/formatCurrency";
 
 interface Coupon {
   _id: string;
@@ -80,21 +81,6 @@ const CouponIndex = () => {
   useEffect(() => {
     getCoupons();
   }, []);
-
-  const formatCurrency = (amount: number | null) => {
-    if (amount === null) {
-      return "-";
-    }
-    if (typeof amount === "number" && !isNaN(amount)) {
-      return amount.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-    }
-    return "-";
-  };
 
   return (
     <div className="card shadow border-0 mt-4">
