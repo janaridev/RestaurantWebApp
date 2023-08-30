@@ -23,7 +23,16 @@ const App = () => {
       <Container>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/details/:productId" element={<Details />} />
+          <Route
+            path="/details/:productId"
+            element={
+              role === "Client" || role === "Admin" ? (
+                <Details />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
 
           {/* Auth */}
           <Route path="/register" element={<Register />} />

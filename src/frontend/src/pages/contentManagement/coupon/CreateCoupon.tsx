@@ -3,14 +3,9 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import { AuthState } from "../../../state";
-
-interface CouponFormValues {
-  couponCode: string;
-  discountAmount: number;
-  minAmount: number;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { AuthState, setLogout } from "../../../state";
+import CouponFormValues from "../../../interfaces/Coupon";
 
 const couponSchema = yup.object().shape({
   couponCode: yup.string().required("Required field."),
@@ -29,6 +24,7 @@ const initialValuesCoupon: CouponFormValues = {
 
 const CreateCoupon = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useSelector((state: AuthState) => state.token);
 
   const handleSubmit = async (values: CouponFormValues) => {
@@ -58,6 +54,11 @@ const CreateCoupon = () => {
         console.error("Error creating coupon:", axiosError);
         const response: AxiosResponse<any> | undefined = axiosError.response;
         const errorMessage = response?.data?.error || "An error occurred";
+
+        if (axiosError.response?.status === 401) {
+          dispatch(setLogout());
+          navigate("/login");
+        }
 
         toast.error(errorMessage, {
           position: "top-right",

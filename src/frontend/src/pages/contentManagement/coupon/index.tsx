@@ -1,20 +1,19 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AuthState } from "../../../state";
+import { AuthState, setLogout } from "../../../state";
 import { formatCurrency } from "../../../utils/formatCurrency";
+import Coupon from "../../../interfaces/Coupon";
 
-interface Coupon {
+interface CouponWithId extends Coupon {
   _id: string;
-  couponCode: string;
-  discountAmount: number;
-  minAmount: number | null;
 }
 
 const CouponIndex = () => {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [coupons, setCoupons] = useState<CouponWithId[]>([]);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useSelector((state: AuthState) => state.token);
 
@@ -44,6 +43,11 @@ const CouponIndex = () => {
         const response: AxiosResponse<any> | undefined = axiosError.response;
         const errorMessage = response?.data?.error || "An error occurred";
 
+        if (axiosError.response?.status === 401) {
+          dispatch(setLogout());
+          navigate("/login");
+        }
+
         toast.error(errorMessage, {
           position: "top-right",
           autoClose: 2000,
@@ -63,7 +67,7 @@ const CouponIndex = () => {
 
   const getCoupons = async () => {
     try {
-      const response = await axios.get<{ result: Coupon[] }>(
+      const response = await axios.get<{ result: CouponWithId[] }>(
         "http://localhost/api/coupons",
         {
           headers: {
