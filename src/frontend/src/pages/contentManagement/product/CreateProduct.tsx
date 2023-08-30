@@ -3,9 +3,9 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import { AuthState } from "../../../state";
-import ProductFormValues from "../../../interfaces/Product"
+import { useDispatch, useSelector } from "react-redux";
+import { AuthState, setLogout } from "../../../state";
+import ProductFormValues from "../../../interfaces/Product";
 
 const productSchema = yup.object().shape({
   name: yup.string().required("Required field."),
@@ -28,6 +28,7 @@ const initialValuesProduct: ProductFormValues = {
 
 const CreateProduct = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useSelector((state: AuthState) => state.token);
 
   const handleSubmit = async (values: ProductFormValues) => {
@@ -57,6 +58,11 @@ const CreateProduct = () => {
         console.error("Error creating product:", axiosError);
         const response: AxiosResponse<any> | undefined = axiosError.response;
         const errorMessage = response?.data?.error || "An error occurred";
+
+        if (axiosError.response?.status === 401) {
+          dispatch(setLogout());
+          navigate("/login");
+        }
 
         toast.error(errorMessage, {
           position: "top-right",

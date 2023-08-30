@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AuthState } from "../../../state";
+import { AuthState, setLogout } from "../../../state";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import Product from "../../../interfaces/Product";
 
@@ -14,6 +14,7 @@ interface ProductWithId extends Product {
 const ProductIndex = () => {
   const [products, setProducts] = useState<ProductWithId[]>([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useSelector((state: AuthState) => state.token);
 
   const deleteProduct = async (productId: string) => {
@@ -41,6 +42,11 @@ const ProductIndex = () => {
         console.error("Error creating product:", axiosError);
         const response: AxiosResponse<any> | undefined = axiosError.response;
         const errorMessage = response?.data?.error || "An error occurred";
+
+        if (axiosError.response?.status === 401) {
+          dispatch(setLogout());
+          navigate("/login");
+        }
 
         toast.error(errorMessage, {
           position: "top-right",
