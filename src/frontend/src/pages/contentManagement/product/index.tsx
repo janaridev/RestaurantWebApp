@@ -3,29 +3,29 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AuthState } from "../../state";
+import { AuthState } from "../../../state";
 
-interface Coupon {
+interface Product {
   _id: string;
-  couponCode: string;
-  discountAmount: number;
-  minAmount: number | null;
+  name: string;
+  price: number;
+  categoryName: string;
 }
 
-const CouponIndex = () => {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
+const ProductIndex = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
   const token = useSelector((state: AuthState) => state.token);
 
-  const deleteCoupon = async (couponId: string) => {
+  const deleteProduct = async (productId: string) => {
     try {
-      await axios.delete(`http://localhost/api/coupons/${couponId}`, {
+      await axios.delete(`http://localhost/api/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      toast.success("Coupon deleted!", {
+      toast.success("Product deleted!", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -35,11 +35,11 @@ const CouponIndex = () => {
         progress: undefined,
         theme: "light",
       });
-      getCoupons();
+      getProducts();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
-        console.error("Error creating coupon:", axiosError);
+        console.error("Error creating product:", axiosError);
         const response: AxiosResponse<any> | undefined = axiosError.response;
         const errorMessage = response?.data?.error || "An error occurred";
 
@@ -60,10 +60,10 @@ const CouponIndex = () => {
     }
   };
 
-  const getCoupons = async () => {
+  const getProducts = async () => {
     try {
-      const response = await axios.get<{ result: Coupon[] }>(
-        "http://localhost/api/coupons",
+      const response = await axios.get<{ result: Product[] }>(
+        "http://localhost/api/products",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,14 +71,14 @@ const CouponIndex = () => {
         }
       );
       console.log(response.data);
-      setCoupons(response.data.result);
+      setProducts(response.data.result);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getCoupons();
+    getProducts();
   }, []);
 
   const formatCurrency = (amount: number | null) => {
@@ -101,7 +101,7 @@ const CouponIndex = () => {
       <div className="card-header bg-secondary bg-gradient ml-0 py-3">
         <div className="row">
           <div className="col-12 text-center">
-            <h1 className="text-dark">Coupons List</h1>
+            <h1 className="text-dark">Products List</h1>
           </div>
         </div>
       </div>
@@ -110,32 +110,32 @@ const CouponIndex = () => {
           <div className="col-6"></div>
           <div
             className="col-6 text-end"
-            onClick={() => navigate("/coupon/create")}
+            onClick={() => navigate("/product/create")}
           >
             <a className="btn btn-outline-primary">
-              <i className="bi bi-plus-square"></i> Create New Coupon
+              <i className="bi bi-plus-square"></i> Create New Product
             </a>
           </div>
         </div>
         <table className="table">
           <thead>
             <tr>
-              <th>Coupon Code</th>
-              <th>Discount Amount</th>
-              <th>Minimum Amount</th>
+              <th>Name</th>
+              <th>Category Name</th>
+              <th>Price</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {coupons.map((coupon) => (
-              <tr key={coupon._id}>
-                <td>{coupon.couponCode}</td>
-                <td>{formatCurrency(coupon.discountAmount)}</td>
-                <td>{formatCurrency(coupon.minAmount)}</td>
+            {products.map((product) => (
+              <tr key={product._id}>
+                <td>{product.name}</td>
+                <td>{product.categoryName}</td>
+                <td>{formatCurrency(product.price)}</td>
                 <td>
                   <a
                     className="btn btn-danger"
-                    onClick={() => deleteCoupon(coupon._id)}
+                    onClick={() => deleteProduct(product._id)}
                   >
                     <i className="bi bi-trash"></i>
                   </a>
@@ -149,4 +149,4 @@ const CouponIndex = () => {
   );
 };
 
-export default CouponIndex;
+export default ProductIndex;
