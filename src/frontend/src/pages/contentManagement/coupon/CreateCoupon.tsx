@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { AuthState } from "../../state";
+import { AuthState } from "../../../state";
 
 interface CouponFormValues {
   couponCode: string;
