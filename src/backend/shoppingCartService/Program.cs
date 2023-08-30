@@ -1,17 +1,19 @@
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
+{
+    builder.Services.AddControllers();
+}
 
 var app = builder.Build();
+{
+    app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
+    app.MapControllers();
 
-app.UseHttpsRedirection();
+    app.MapGet("/", () =>
+    {
+        return "Hello World";
+    });
 
-app.UseAuthorization();
+    app.Run();
+}
 
-app.MapControllers();
-
-app.Run();
