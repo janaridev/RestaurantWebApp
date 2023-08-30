@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/formatCurrency";
 import Product from "../../interfaces/Product";
+import { useSelector } from "react-redux";
+import { AuthState } from "../../state";
 
 interface ProductWithId extends Product {
   _id: string;
@@ -9,6 +11,7 @@ interface ProductWithId extends Product {
 
 const HomePage = () => {
   const [products, setProducts] = useState<ProductWithId[]>([]);
+  const role = useSelector((state: AuthState) => state.role);
 
   const getProducts = async () => {
     try {
