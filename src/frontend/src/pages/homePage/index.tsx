@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 interface Product {
+  _id: string;
   name: string;
   price: number;
   description: string;
@@ -55,7 +56,12 @@ const HomePage = () => {
                   </div>
                   <p className="card-text flex-grow-1">{product.description}</p>
                   <div className="mt-auto">
-                    <a className="btn btn-success form-control">Details</a>
+                    <a
+                      className="btn btn-success form-control"
+                      href={`/details/${product._id}`}
+                    >
+                      Details
+                    </a>
                   </div>
                 </div>
               </div>
