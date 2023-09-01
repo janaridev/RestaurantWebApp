@@ -46,8 +46,19 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - mongodbdata:/data/db
+      - mongodbdata:/data/restaurant/mongodb
     hostname: mongodb
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - 3307:3306
+    volumes:
+      - mysqldata:/data/restaurant/mysql
 
 volumes:
   mongodbdata:
+  mysqldata:
