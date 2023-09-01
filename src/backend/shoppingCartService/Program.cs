@@ -19,11 +19,6 @@ var app = builder.Build();
 
     app.MapControllers();
 
-    app.MapGet("/", () =>
-    {
-        return "Hello World";
-    });
-
     app.Run();
 }
 
