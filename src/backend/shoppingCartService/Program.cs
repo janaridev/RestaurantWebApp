@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
             ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")));
         Console.WriteLine("Connected to DB");
     });
+    builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddControllers();
 }
 
