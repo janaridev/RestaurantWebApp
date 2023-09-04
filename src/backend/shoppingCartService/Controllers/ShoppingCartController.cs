@@ -21,6 +21,7 @@ public class ShoppingCartController : ControllerBase
         _mapper = mapper;
     }
 
+
     [HttpPost("upsert")]
     public async Task<object> Upsert(CartDto cartDto)
     {
@@ -74,6 +75,34 @@ public class ShoppingCartController : ControllerBase
             Console.WriteLine($"--> Error while upserting shopping cart : {e.Message}");
             return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
         }
+    }
 
+
+    [HttpPost("remove")]
+    public async Task<object> RemoveCart([FromBody] Guid cartDetailsId)
+    {
+        try
+        {
+            CartDetails cartDetails = _db.CartDetails
+               .First(u => u.CartDetailsId == cartDetailsId);
+
+            int totalCountofCartItem = _db.CartDetails.Where(u => u.CartHeaderId == cartDetails.CartHeaderId).Count();
+            _db.CartDetails.Remove(cartDetails);
+            if (totalCountofCartItem == 1)
+            {
+                var cartHeaderToRemove = await _db.CartHeaders
+                   .FirstOrDefaultAsync(u => u.CartHeaderId == cartDetails.CartHeaderId);
+
+                _db.CartHeaders.Remove(cartHeaderToRemove);
+            }
+            await _db.SaveChangesAsync();
+
+            return ApiResponseHandler.SendSuccessResponse(200, "Product was removed from cart!");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"--> Error while deleting shopping cart : {e.Message}");
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+        }
     }
 }
