@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using shoppingCartService.Models.Responses;
+using shoppingCartService.Services.Coupon;
+using shoppingCartService.Services.Product;
 
 namespace shoppingCartService.Controllers;
 
@@ -14,11 +16,80 @@ public class ShoppingCartController : ControllerBase
 {
     private readonly RepositoryContext _db;
     private readonly IMapper _mapper;
+    private readonly IProductService _productService;
+    private readonly ICouponService _couponService;
 
-    public ShoppingCartController(RepositoryContext db, IMapper mapper)
+    public ShoppingCartController(RepositoryContext db, IMapper mapper, IProductService productService,
+        ICouponService couponService)
     {
         _db = db;
         _mapper = mapper;
+        _productService = productService;
+        _couponService = couponService;
+    }
+
+
+    [HttpGet("{userId}")]
+    public async Task<object> GetCart(string userId)
+    {
+        try
+        {
+            CartDto cart = new()
+            {
+                CartHeader = _mapper.Map<CartHeaderDto>(_db.CartHeaders.First(u => u.UserId == userId))
+            };
+            Console.WriteLine(cart);
+            cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails
+                .Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId));
+            Console.WriteLine(cart);
+
+            IEnumerable<ProductDto> productDtos = await _productService.GetProducts();
+
+            foreach (var item in cart.CartDetails)
+            {
+                Console.WriteLine(item.Product);
+                item.Product = productDtos.FirstOrDefault(u => u._id == item.ProductId);
+                cart.CartHeader.CartTotal += item.Count * item.Product.Price;
+            }
+
+            //apply coupon if any
+            if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
+            {
+                CouponDto coupon = await _couponService.GetCoupons(cart.CartHeader.CouponCode);
+                if (coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                {
+                    cart.CartHeader.CartTotal -= coupon.DiscountAmount;
+                    cart.CartHeader.Discount = coupon.DiscountAmount;
+                }
+            }
+
+            return ApiResponseHandler.SendSuccessResponse(200, cart);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"--> Error while getting shopping cart : {e.Message}");
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+        }
+    }
+
+
+    [HttpPost("applyCoupon")]
+    public async Task<object> ApplyCoupon([FromBody] CartDto cartDto)
+    {
+        try
+        {
+            var cartFromDb = await _db.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
+            cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+            _db.CartHeaders.Update(cartFromDb);
+            await _db.SaveChangesAsync();
+
+            return ApiResponseHandler.SendSuccessResponse(200, cartFromDb);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"--> Error while getting shopping cart : {e.Message}");
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+        }
     }
 
 

@@ -2,7 +2,7 @@ namespace Dtos;
 
 public record ProductDto
 {
-    public string ProductId { get; init; }
+    public string _id { get; init; }
     public string Name { get; init; }
     public double Price { get; init; }
     public string Description { get; init; }

@@ -6,6 +6,6 @@ public record CartDetailsDto
     public Guid CartHeaderId { get; set; }
     public CartHeaderDto CartHeader { get; init; }
     public string ProductId { get; init; }
-    public ProductDto Product { get; init; }
+    public ProductDto Product { get; set; }
     public int Count { get; set; }
 }
