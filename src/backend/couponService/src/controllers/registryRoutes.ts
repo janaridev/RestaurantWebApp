@@ -7,38 +7,11 @@ export async function registryRoutes(server: FastifyInstance): Promise<void> {
   const couponService = new CouponService();
   const couponController = new CouponController(couponService);
 
-  server.get(
-    "/coupons",
-    {
-      preHandler: [server.auth],
-      preValidation: (req, reply, done) => {
-        const role = checkRole(req.headers.authorization);
-
-        if (role === "Admin") {
-          done();
-        } else {
-          return reply.status(403).send();
-        }
-      },
-    },
-    couponController.getCoupons.bind(couponController)
-  );
+  server.get("/coupons", couponController.getCoupons.bind(couponController));
 
   server.get(
-    "/coupons/:couponId",
-    {
-      preHandler: [server.auth],
-      preValidation: (req, reply, done) => {
-        const role = checkRole(req.headers.authorization);
-
-        if (role === "Admin") {
-          done();
-        } else {
-          return reply.status(403).send();
-        }
-      },
-    },
-    couponController.getCouponById.bind(couponController)
+    "/coupons/:couponCode",
+    couponController.getCouponByCode.bind(couponController)
   );
 
   server.post(

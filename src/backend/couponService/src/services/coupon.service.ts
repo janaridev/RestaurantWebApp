@@ -13,6 +13,11 @@ export class CouponService {
     return coupon;
   }
 
+  public async getCouponByCode(couponCode: string): Promise<ICoupon> {
+    const coupon = await Coupon.findOne({ couponCode: couponCode });
+    return coupon;
+  }
+
   public async createCoupon(coupon: ICreateCouponDto): Promise<ICoupon> {
     const newCoupon = new Coupon(coupon);
     const createdCoupon = await newCoupon.save();
