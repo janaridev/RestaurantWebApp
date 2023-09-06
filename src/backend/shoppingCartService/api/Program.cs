@@ -5,7 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
     // CUSTOM EXTENSIONS
     builder.Services.ConfigureSqlContext(builder.Configuration);
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddApplicationPart(typeof(presentation.AssemblyReference).Assembly);
 }
 
 
