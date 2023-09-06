@@ -4,5 +4,6 @@ namespace domain.irepository;
 
 public interface ICartHeaderRepository
 {
-    Task<CartHeader> GetCartHeader(Guid userId, bool trackChanges);
+    Task<CartHeader> GetCartHeaderByUserId(string userId, bool trackChanges);
+    void CreateCartHeader(CartHeader cartHeader);
 }

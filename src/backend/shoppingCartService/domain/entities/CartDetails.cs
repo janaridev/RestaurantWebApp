@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using domain.dtos;
-using domain.entities;
 
-namespace Models;
+namespace domain.entities;
 
 public class CartDetails
 {

@@ -1,6 +1,5 @@
 using domain.entities;
 using Microsoft.EntityFrameworkCore;
-using Models;
 
 namespace infrastructure;
 
