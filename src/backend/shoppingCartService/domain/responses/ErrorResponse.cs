@@ -1,8 +1,6 @@
 namespace domain.responses;
 
-public class ErrorResponse
+public class ErrorResponse : CustomResponse
 {
-    public bool IsSuccess { get; set; }
-    public int StatusCode { get; set; }
     public string Error { get; set; }
 }
