@@ -1,5 +1,10 @@
+using api.extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 {
+    // CUSTOM EXTENSIONS
+    builder.Services.ConfigureSqlContext(builder.Configuration);
+
     builder.Services.AddControllers();
 }
 
