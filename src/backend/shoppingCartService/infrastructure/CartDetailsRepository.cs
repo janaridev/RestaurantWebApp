@@ -6,6 +6,9 @@ namespace infrastructure;
 
 public class CartDetailsRepository : RepositoryBase<CartDetails>, ICartDetailsRepository
 {
+    public CartDetailsRepository(RepositoryContext repositoryContext)
+    { }
+
     public async Task<CartDetails> FindProductByCartHeaderId(string productId, Guid cartHeaderId,
         CartDetails[] cartDetails, bool trackChanges) =>
             await FindByCondition(u => u.ProductId == cartDetails.First().ProductId &&

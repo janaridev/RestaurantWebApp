@@ -6,6 +6,9 @@ namespace infrastructure;
 
 public class CartHeaderRepository : RepositoryBase<CartHeader>, ICartHeaderRepository
 {
+    public CartHeaderRepository(RepositoryContext repositoryContext)
+    { }
+
     public async Task<CartHeader> GetCartHeaderByUserId(string userId, bool trackChanges) =>
         await FindByCondition(c => c.UserId.Equals(userId), trackChanges)
             .SingleOrDefaultAsync();
