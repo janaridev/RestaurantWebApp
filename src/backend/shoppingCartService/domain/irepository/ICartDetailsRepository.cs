@@ -5,6 +5,6 @@ namespace domain.irepository;
 public interface ICartDetailsRepository
 {
     Task<CartDetails> FindProductByCartHeaderId(Guid cartHeaderId,
-        IEnumerable<CartDetails> cartDetails, bool trackChanges);
+        string productId, bool trackChanges);
     void CreteCartDetails(CartDetails cartDetails);
 }

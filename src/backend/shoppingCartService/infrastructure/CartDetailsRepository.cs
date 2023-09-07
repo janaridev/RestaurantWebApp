@@ -6,12 +6,12 @@ namespace infrastructure;
 
 public class CartDetailsRepository : RepositoryBase<CartDetails>, ICartDetailsRepository
 {
-    public CartDetailsRepository(RepositoryContext repositoryContext)
+    public CartDetailsRepository(RepositoryContext repositoryContext) : base(repositoryContext)
     { }
 
     public async Task<CartDetails> FindProductByCartHeaderId(Guid cartHeaderId,
-        IEnumerable<CartDetails> cartDetails, bool trackChanges) =>
-            await FindByCondition(u => u.ProductId == cartDetails.First().ProductId &&
+        string productId, bool trackChanges) =>
+            await FindByCondition(u => u.ProductId == productId &&
             u.CartHeaderId == cartHeaderId, trackChanges).SingleOrDefaultAsync();
 
     public void CreteCartDetails(CartDetails cartDetails) => Create(cartDetails);

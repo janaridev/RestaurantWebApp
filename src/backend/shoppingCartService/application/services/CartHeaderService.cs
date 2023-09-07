@@ -19,11 +19,6 @@ public class CartHeaderService : ICartHeaderService
 
     public async Task<CartHeader> GetCartHeaderByUserId(string userId, bool trackChanges)
     {
-        if (userId is null)
-        {
-            return null;
-        }
-
         var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(userId, trackChanges);
         if (cartHeaderFromDb is null)
         {

@@ -6,7 +6,7 @@ namespace infrastructure;
 
 public class CartHeaderRepository : RepositoryBase<CartHeader>, ICartHeaderRepository
 {
-    public CartHeaderRepository(RepositoryContext repositoryContext)
+    public CartHeaderRepository(RepositoryContext repositoryContext) : base(repositoryContext)
     { }
 
     public async Task<CartHeader> GetCartHeaderByUserId(string userId, bool trackChanges) =>

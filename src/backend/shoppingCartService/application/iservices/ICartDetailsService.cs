@@ -6,7 +6,7 @@ namespace application.iservices;
 public interface ICartDetailsService
 {
     Task<CartDetails> FindProductByCartHeaderId(Guid cartHeaderId,
-        IEnumerable<CartDetails> cartDetails, bool trackChanges);
+        string productId, bool trackChanges);
     Task<CartDetails> CreateCartDetail(CartDetailsDto cartDetails);
-
+    Task UpdateCartDetail(CartDetails cartDetails, CartDetailsDto cartDetailsDto);
 }

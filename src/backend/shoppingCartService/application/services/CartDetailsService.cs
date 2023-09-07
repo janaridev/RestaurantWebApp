@@ -19,15 +19,15 @@ public class CartDetailsService : ICartDetailsService
     }
 
     public async Task<CartDetails> FindProductByCartHeaderId(Guid cartHeaderId,
-        IEnumerable<CartDetails> cartDetails, bool trackChanges)
+        string productId, bool trackChanges)
     {
-        if (cartDetails is null)
+        if (productId is null)
         {
             return null;
         }
 
         var cartDetail = await _repositoryManager.CartDetails.FindProductByCartHeaderId(cartHeaderId,
-            cartDetails, trackChanges);
+            productId, trackChanges);
 
         return cartDetail is null ? null : cartDetail;
     }
@@ -45,5 +45,11 @@ public class CartDetailsService : ICartDetailsService
         await _repositoryManager.SaveAsync();
 
         return cartDetails;
+    }
+
+    public async Task UpdateCartDetail(CartDetails cartDetails, CartDetailsDto cartDetailsDto)
+    {
+        _mapper.Map(cartDetailsDto, cartDetails);
+        await _repositoryManager.SaveAsync();
     }
 }
