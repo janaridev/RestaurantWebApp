@@ -5,6 +5,17 @@ namespace api.extensions;
 
 public static class ServiceExtensions
 {
+    public static void ConfigureCors(this IServiceCollection services) =>
+        services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost", "http://localhost:3000", "http://127.0.0.1")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
     {
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENV");

@@ -3,6 +3,7 @@ using api.extensions;
 var builder = WebApplication.CreateBuilder(args);
 {
     // CUSTOM EXTENSIONS
+    builder.Services.ConfigureCors();
     builder.Services.ConfigureSqlContext(builder.Configuration);
 
     builder.Services.AddAutoMapper(typeof(Program));
@@ -13,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.UseCors("CorsPolicy");
+
     app.UseAuthorization();
 
     app.MapControllers();
