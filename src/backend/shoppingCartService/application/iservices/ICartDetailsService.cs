@@ -1,10 +1,12 @@
+using domain.dtos;
 using domain.entities;
 
-namespace domain.irepository;
+namespace application.iservices;
 
-public interface ICartDetailsRepository
+public interface ICartDetailsService
 {
     Task<CartDetails> FindProductByCartHeaderId(Guid cartHeaderId,
         IEnumerable<CartDetails> cartDetails, bool trackChanges);
-    void CreteCartDetails(CartDetails cartDetails);
+    Task<CartDetails> CreateCartDetail(CartDetailsDto cartDetails);
+
 }
