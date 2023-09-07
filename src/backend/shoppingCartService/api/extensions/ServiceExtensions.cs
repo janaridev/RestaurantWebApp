@@ -1,3 +1,4 @@
+using domain.irepository;
 using infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,11 @@ public static class ServiceExtensions
                     .AllowAnyHeader();
             });
         });
+
+    
+    public static void ConfigureRepositoryManager(this IServiceCollection services) =>
+        services.AddScoped<IRepositoryManager, RepositoryManager>();
+
 
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
     {
