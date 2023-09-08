@@ -20,8 +20,8 @@ public class ShoppingCartController : ControllerBase
     {
         try
         {
-            if (cartDto.CartHeader.UserId is null || cartDto.CartHeader is null ||
-                cartDto.CartDetails is null)
+            if (cartDto.CartHeader.UserId is null || cartDto.CartDetails.First().Count is 0 ||
+                cartDto.CartDetails.First().ProductId is null)
             {
                 return ApiResponseHandler.SendErrorResponse(400, "Provide more information.");
             }
@@ -55,7 +55,7 @@ public class ShoppingCartController : ControllerBase
                 {
                     cartDto.CartDetails.First().Count += cartDetailsFromDb.Count;
                     cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
-                    cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartDetailsId;
+                    cartDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailsId;
 
                     await _serviceManager.CartDetailsService.UpdateCartDetail(
                         cartDetailsFromDb, cartDto.CartDetails.First());
