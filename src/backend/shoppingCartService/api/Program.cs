@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
     // CUSTOM EXTENSIONS
     builder.Services.ConfigureCors();
     builder.Services.ConfigureRepositoryManager();
+    builder.Services.InjectServices();
+    builder.Services.ConfigureHttpClients(builder.Configuration);
     builder.Services.ConfigureSqlContext(builder.Configuration);
 
     builder.Services.AddAutoMapper(typeof(Program));
