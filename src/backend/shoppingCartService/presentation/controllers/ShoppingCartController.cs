@@ -30,6 +30,59 @@ public class ShoppingCartController : ControllerBase
     }
 
 
+    [HttpGet("{userId}")]
+    public async Task<CustomResponse> GetCart(string userId)
+    {
+        try
+        {
+            if (userId is null)
+                return ApiResponseHandler.SendErrorResponse(400, "User id is null");
+
+            var cartHeader = await _repositoryManager.CartHeader.GetCartHeaderByUserId(userId,
+                trackChanges: false);
+            if (cartHeader is null)
+                return ApiResponseHandler.SendErrorResponse(404, "User is not exists.");
+
+            CartDto cart = new()
+            {
+                CartHeader = _mapper.Map<CartHeaderDto>(cartHeader)
+            };
+
+            var cartDetails = await _repositoryManager.CartDetails.FindCartDetailsByCartHeaderId(
+                cart.CartHeader.CartHeaderId, trackChanges: false);
+            cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(cartDetails);
+
+            IEnumerable<ProductDto> products = await _productService.GetProducts();
+
+            foreach (var item in cart.CartDetails)
+            {
+                var product = products.FirstOrDefault(u => u._id == item.ProductId);
+
+                item.Product = product;
+                cart.CartHeader.CartTotal += item.Count * item.Product.Price;
+            }
+
+            //apply coupon if any
+            if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
+            {
+                CouponDto coupon = await _couponService.GetCoupons(cart.CartHeader.CouponCode);
+                if (coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                {
+                    cart.CartHeader.CartTotal -= coupon.DiscountAmount;
+                    cart.CartHeader.Discount = coupon.DiscountAmount;
+                }
+            }
+
+            return ApiResponseHandler.SendSuccessResponse(200, cart);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"--> Error while getting cart : {e.Message}");
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+        }
+    }
+
+
     [HttpPost("upsert")]
     public async Task<CustomResponse> Upsert(CartDto cartDto)
     {
@@ -40,6 +93,11 @@ public class ShoppingCartController : ControllerBase
             {
                 return ApiResponseHandler.SendErrorResponse(400, "Provide more information.");
             }
+
+            var product = await _productService.GetProductById(cartDto.CartDetails
+                .First().ProductId);
+            if (product.Name is null)
+                return ApiResponseHandler.SendErrorResponse(404, "Seems like product was deleted.");
 
             var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(
                 cartDto.CartHeader.UserId, trackChanges: false);
