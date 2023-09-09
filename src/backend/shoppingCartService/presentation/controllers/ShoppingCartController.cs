@@ -4,6 +4,7 @@ using domain.entities;
 using domain.irepository;
 using domain.responses;
 using Microsoft.AspNetCore.Mvc;
+using presentation.services.coupon;
 using presentation.services.product;
 
 namespace presentation.controllers;
@@ -14,14 +15,17 @@ public class ShoppingCartController : ControllerBase
 {
     private readonly IRepositoryManager _repositoryManager;
     private readonly IProductService _productService;
+    private readonly ICouponService _couponService;
     private readonly IMapper _mapper;
 
     public ShoppingCartController(IRepositoryManager repositoryManager,
         IProductService productService,
+        ICouponService couponService,
         IMapper mapper)
     {
         _repositoryManager = repositoryManager;
         _productService = productService;
+        _couponService = couponService;
         _mapper = mapper;
     }
 

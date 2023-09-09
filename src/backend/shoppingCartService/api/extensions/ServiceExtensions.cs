@@ -1,6 +1,7 @@
 using domain.irepository;
 using infrastructure;
 using Microsoft.EntityFrameworkCore;
+using presentation.services.coupon;
 using presentation.services.product;
 
 namespace api.extensions;
@@ -25,12 +26,15 @@ public static class ServiceExtensions
     public static void InjectServices(this IServiceCollection services)
     {
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICouponService, CouponService>();
     }
 
     public static void ConfigureHttpClients(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient("Product", u => u.BaseAddress =
             new Uri(configuration["Services:ProductService"]));
+        services.AddHttpClient("Coupon", u => u.BaseAddress =
+            new Uri(configuration["Services:CouponService"]));
     }
 
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
