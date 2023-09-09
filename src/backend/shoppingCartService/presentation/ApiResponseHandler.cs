@@ -1,6 +1,6 @@
 using domain.responses;
 
-namespace shoppingCartService.Models.Responses;
+namespace presentation;
 
 public static class ApiResponseHandler
 {

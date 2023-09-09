@@ -20,14 +20,5 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 
     public void Create(T entity) => _repositoryContext.Set<T>().Add(entity);
 
-    public void Delete(T entity)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public void Update(T entity)
-    {
-        throw new NotImplementedException();
-    }
+    public void Delete(T entity) => _repositoryContext.Set<T>().Remove(entity);
 }

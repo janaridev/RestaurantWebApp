@@ -1,8 +1,9 @@
-using application.iservices;
+using AutoMapper;
 using domain.dtos;
+using domain.entities;
+using domain.irepository;
 using domain.responses;
 using Microsoft.AspNetCore.Mvc;
-using shoppingCartService.Models.Responses;
 
 namespace presentation.controllers;
 
@@ -10,9 +11,14 @@ namespace presentation.controllers;
 [Route("api/cart")]
 public class ShoppingCartController : ControllerBase
 {
-    private readonly IServiceManager _serviceManager;
+    private readonly IRepositoryManager _repositoryManager;
+    private readonly IMapper _mapper;
 
-    public ShoppingCartController(IServiceManager serviceManager) => _serviceManager = serviceManager;
+    public ShoppingCartController(IRepositoryManager repositoryManager, IMapper mapper)
+    {
+        _repositoryManager = repositoryManager;
+        _mapper = mapper;
+    }
 
 
     [HttpPost("upsert")]
@@ -26,30 +32,34 @@ public class ShoppingCartController : ControllerBase
                 return ApiResponseHandler.SendErrorResponse(400, "Provide more information.");
             }
 
-            var cartHeaderFromDb = await _serviceManager.CartHeaderService.GetCartHeaderByUserId(
+            var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(
                 cartDto.CartHeader.UserId, trackChanges: false);
 
             if (cartHeaderFromDb is null)
             {
-                var cartHeader = await _serviceManager.CartHeaderService.CreateCartHeader(cartDto.CartHeader);
+                var cartHeader = _mapper.Map<CartHeader>(cartDto.CartHeader);
+                _repositoryManager.CartHeader.CreateCartHeader(cartHeader);
+                await _repositoryManager.SaveAsync();
 
                 cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
 
-                var cartDetail = await _serviceManager.CartDetailsService.CreateCartDetail(
-                    cartDto.CartDetails.First());
+                var cartDetail = _mapper.Map<CartDetails>(cartDto.CartDetails.First());
+                _repositoryManager.CartDetails.CreteCartDetails(cartDetail);
+                await _repositoryManager.SaveAsync();
             }
             else
             {
-                var cartDetailsFromDb = await _serviceManager.CartDetailsService
-                    .FindProductByCartHeaderId(cartHeaderFromDb.CartHeaderId,
-                    cartDto.CartDetails.First().ProductId,
+                var cartDetailsFromDb = await _repositoryManager.CartDetails.FindProductByCartHeaderId(
+                    cartHeaderFromDb.CartHeaderId, cartDto.CartDetails.First().ProductId,
                     trackChanges: true);
 
                 if (cartDetailsFromDb is null)
                 {
                     cartDto.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
-                    var createdDetail = await _serviceManager.CartDetailsService.CreateCartDetail(
-                        cartDto.CartDetails.First());
+
+                    var cartDetail = _mapper.Map<CartDetails>(cartDto.CartDetails.First());
+                    _repositoryManager.CartDetails.CreteCartDetails(cartDetail);
+                    await _repositoryManager.SaveAsync();
                 }
                 else
                 {
@@ -57,8 +67,8 @@ public class ShoppingCartController : ControllerBase
                     cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
                     cartDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailsId;
 
-                    await _serviceManager.CartDetailsService.UpdateCartDetail(
-                        cartDetailsFromDb, cartDto.CartDetails.First());
+                    _mapper.Map(cartDto.CartDetails.First(), cartDetailsFromDb);
+                    await _repositoryManager.SaveAsync();
                 }
             }
 
@@ -68,6 +78,39 @@ public class ShoppingCartController : ControllerBase
         {
             Console.WriteLine($"--> Error while upserting to shopping cart : {e.Message}");
             return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+        }
+    }
+
+    [HttpDelete("{cartDetailId}")]
+    public async Task<CustomResponse> Remove(Guid cartDetailId)
+    {
+        try
+        {
+            var cartDetail = await _repositoryManager.CartDetails.FindCartDetailById(cartDetailId,
+                trackChanges: false);
+            if (cartDetail is null)
+            {
+                return ApiResponseHandler.SendErrorResponse(404, "Cart Detail was not found.");
+            }
+
+            int totalCountOfCartItem = await _repositoryManager.CartDetails.TotalCountOfCartItem(cartDetail.CartHeaderId,
+                trackChanges: false);
+            _repositoryManager.CartDetails.DeleteCartDetails(cartDetail);
+
+            if (totalCountOfCartItem == 1)
+            {
+                var cartHeaderToRemove = await _repositoryManager.CartHeader
+                    .GetCartHeaderById(cartDetail.CartHeaderId, trackChanges: false);
+                _repositoryManager.CartHeader.DeleteCartHeader(cartHeaderToRemove);
+            }
+            await _repositoryManager.SaveAsync();
+
+            return ApiResponseHandler.SendSuccessResponse(200, "Product was removed from cart");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"--> Error while deleting shopping cart : {e.Message}");
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");   
         }
     }
 }

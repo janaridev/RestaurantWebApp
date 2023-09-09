@@ -14,5 +14,13 @@ public class CartDetailsRepository : RepositoryBase<CartDetails>, ICartDetailsRe
             await FindByCondition(u => u.ProductId == productId &&
             u.CartHeaderId == cartHeaderId, trackChanges).SingleOrDefaultAsync();
 
+    public async Task<CartDetails> FindCartDetailById(Guid id, bool trackChanges) =>
+        await FindByCondition(u => u.CartDetailsId == id, trackChanges).SingleOrDefaultAsync();
+
     public void CreteCartDetails(CartDetails cartDetails) => Create(cartDetails);
+
+    public void DeleteCartDetails(CartDetails cartDetails) => Delete(cartDetails);
+
+    public async Task<int> TotalCountOfCartItem(Guid cartHeaderId, bool trackChanges) =>
+        await FindByCondition(u => u.CartHeaderId == cartHeaderId, trackChanges).CountAsync();
 }
