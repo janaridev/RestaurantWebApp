@@ -81,6 +81,39 @@ public class ShoppingCartController : ControllerBase
         }
     }
 
+
+    [HttpPost("applyCoupon")]
+    public async Task<CustomResponse> ApplyCoupon([FromBody] CartDto cartDto)
+    {
+        try
+        {
+            if (cartDto.CartHeader.UserId is null || cartDto.CartHeader.CouponCode is null)
+            {
+                return ApiResponseHandler.SendErrorResponse(400, "Provide more information.");
+            }
+
+            var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(
+                cartDto.CartHeader.UserId, trackChanges: false);
+            if (cartHeaderFromDb is null)
+            {
+                return ApiResponseHandler.SendErrorResponse(400, "User was not found");
+            }
+
+            cartHeaderFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+            _repositoryManager.CartHeader.UpdateCartHeader(cartHeaderFromDb);
+
+            await _repositoryManager.SaveAsync();
+
+            return ApiResponseHandler.SendSuccessResponse(200, "Coupon was applied");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"--> Error while applying coupon code : {e.Message}");
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+        }
+    }
+
+
     [HttpDelete("{cartDetailId}")]
     public async Task<CustomResponse> Remove(Guid cartDetailId)
     {
@@ -110,7 +143,7 @@ public class ShoppingCartController : ControllerBase
         catch (Exception e)
         {
             Console.WriteLine($"--> Error while deleting shopping cart : {e.Message}");
-            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");   
+            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
         }
     }
 }

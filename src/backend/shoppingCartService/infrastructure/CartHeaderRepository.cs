@@ -19,5 +19,7 @@ public class CartHeaderRepository : RepositoryBase<CartHeader>, ICartHeaderRepos
 
     public void CreateCartHeader(CartHeader cartHeader) => Create(cartHeader);
 
+    public void UpdateCartHeader(CartHeader cartHeader) => Update(cartHeader);
+
     public void DeleteCartHeader(CartHeader cartHeader) => Delete(cartHeader);
 }

@@ -8,4 +8,5 @@ public interface ICartHeaderRepository
     Task<CartHeader> GetCartHeaderByUserId(string userId, bool trackChanges);
     void CreateCartHeader(CartHeader cartHeader);
     void DeleteCartHeader(CartHeader cartHeader);
+    void UpdateCartHeader(CartHeader cartHeader);
 }
