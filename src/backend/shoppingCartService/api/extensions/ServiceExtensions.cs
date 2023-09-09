@@ -1,6 +1,9 @@
+using System.Text;
 using domain.irepository;
 using infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using presentation.services.coupon;
 using presentation.services.product;
 
@@ -49,5 +52,37 @@ public static class ServiceExtensions
             opts.UseMySql(mySqlConnection,
                 ServerVersion.AutoDetect(mySqlConnection)
             ));
+    }
+
+    public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+    {
+        var secretKey = configuration["SECRET_KEY"];
+
+        services.AddAuthentication(opt =>
+        {
+            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    Console.WriteLine("Authentication failed: " + context.Exception);
+                    return Task.CompletedTask;
+                },
+                // Add more event handlers as needed
+            };
+        });
     }
 }

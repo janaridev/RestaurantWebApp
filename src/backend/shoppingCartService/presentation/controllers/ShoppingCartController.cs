@@ -3,6 +3,7 @@ using domain.dtos;
 using domain.entities;
 using domain.irepository;
 using domain.responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using presentation.services.coupon;
 using presentation.services.product;
@@ -31,6 +32,7 @@ public class ShoppingCartController : ControllerBase
 
 
     [HttpGet("{userId}")]
+    [Authorize]
     public async Task<CustomResponse> GetCart(string userId)
     {
         try
@@ -84,6 +86,7 @@ public class ShoppingCartController : ControllerBase
 
 
     [HttpPost("upsert")]
+    [Authorize]
     public async Task<CustomResponse> Upsert(CartDto cartDto)
     {
         try
@@ -150,6 +153,7 @@ public class ShoppingCartController : ControllerBase
 
 
     [HttpPost("applyCoupon")]
+    [Authorize]
     public async Task<CustomResponse> ApplyCoupon([FromBody] CartDto cartDto)
     {
         try
@@ -182,6 +186,7 @@ public class ShoppingCartController : ControllerBase
 
 
     [HttpDelete("{cartDetailId}")]
+    [Authorize]
     public async Task<CustomResponse> Remove(Guid cartDetailId)
     {
         try

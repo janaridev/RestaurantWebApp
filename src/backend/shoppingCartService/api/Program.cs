@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.InjectServices();
     builder.Services.ConfigureHttpClients(builder.Configuration);
     builder.Services.ConfigureSqlContext(builder.Configuration);
+    builder.Services.ConfigureJWT(builder.Configuration);
+
 
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.AddControllers()
@@ -18,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.UseCors("CorsPolicy");
+
+    app.UseAuthentication();
 
     app.UseAuthorization();
 
