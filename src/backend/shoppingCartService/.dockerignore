@@ -1,0 +1,51 @@
+# Ignore common build artifacts and files
+bin/
+obj/
+node_modules/
+.vscode/
+*.suo
+*.user
+*.sln.docstates
+
+# Ignore Visual Studio files
+.vs/
+
+# Ignore .NET Core user-specific files/directories
+.vscode/
+.vscodeignore
+.vscodeignore.cache
+nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Ignore Git related files
+.git/
+.gitignore
+
+# Ignore Docker-specific files
+Dockerfile
+.dockerignore
+
+# Ignore Docker Compose files
+docker-compose.yml
+docker-compose.override.yml
+
+# Ignore logs and other runtime files
+logs/
+*.log
+*.log.*
+*.tmp
+
+# Ignore test files
+testresults/
+testbin/
+
+# Ignore package manager files
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Ignore application-specific files (customize as needed)
+appsettings.json
+appsettings.Development.json

@@ -39,6 +39,13 @@ services:
     ports:
       - 3030:3030
 
+  shoppingcartservice:
+    image: csharpjanari/shoppingcartservice:latest
+    container_name: shoppingcartservice
+    hostname: shoppingcartservice
+    ports:
+      - 3040:3040
+
   # Databases
   mongodb:
     image: mongo
@@ -46,8 +53,19 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - mongodbdata:/data/db
+      - mongodbdata:/data/restaurant/mongodb
     hostname: mongodb
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - 3307:3306
+    volumes:
+      - mysqldata:/data/restaurant/mysql
 
 volumes:
   mongodbdata:
+  mysqldata:

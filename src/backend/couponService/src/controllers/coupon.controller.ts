@@ -60,6 +60,27 @@ export class CouponController {
     }
   }
 
+  public async getCouponByCode(
+    request: FastifyRequest<{ Params: { couponCode: string } }>,
+    reply: FastifyReply
+  ): Promise<void> {
+    try {
+      const { couponCode } = request.params;
+      if (!couponCode) {
+        return handleError(reply, 400, "Coupon id is null.");
+      }
+
+      const coupon = await this.couponService.getCouponByCode(couponCode);
+      if (coupon === null) {
+        return handleError(reply, 404, "Coupon was not found.");
+      }
+
+      return sendSuccessResponse(reply, 200, coupon);
+    } catch (error) {
+      return handleError(reply, 500, "Error while fetching coupon");
+    }
+  }
+
   public async createCoupon(
     request: FastifyRequest<{ Body: ICreateCouponDto }>,
     reply: FastifyReply
