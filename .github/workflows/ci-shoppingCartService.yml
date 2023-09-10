@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
-      - name: Build
-        run: cd src/backend/shoppingCartService && dotnet build --no-restore
       - name: Restore dependencies
         run: cd src/backend/shoppingCartService && dotnet restore
+      - name: Build
+        run: cd src/backend/shoppingCartService && dotnet build
 
   push_to_Docker_Hub:
     runs-on: ubuntu-latest
