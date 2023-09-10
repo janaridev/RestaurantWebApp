@@ -39,6 +39,13 @@ services:
     ports:
       - 3030:3030
 
+  shoppingcartservice:
+    image: csharpjanari/shoppingcartservice:latest
+    container_name: shoppingcartservice
+    hostname: shoppingcartservice
+    ports:
+      - 3040:3040
+
   # Databases
   mongodb:
     image: mongo
