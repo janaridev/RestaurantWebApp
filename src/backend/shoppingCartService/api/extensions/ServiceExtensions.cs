@@ -34,8 +34,18 @@ public static class ServiceExtensions
 
     public static void ConfigureHttpClients(this IServiceCollection services, IConfiguration configuration)
     {
+        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENV");
+
+        var productService = env == "Development" ?
+            "ProductServiceDevelopment" :
+            "ProductServiceProduction";
+
+        var couponService = env == "Development" ?
+            "CouponServiceDevelopment" :
+            "CouponServiceProduction";
+
         services.AddHttpClient("Product", u => u.BaseAddress =
-            new Uri(configuration["Services:ProductService"]));
+            new Uri(configuration[$"Services:{productService}"]));
         services.AddHttpClient("Coupon", u => u.BaseAddress =
             new Uri(configuration["Services:CouponService"]));
     }
