@@ -27,6 +27,8 @@ var app = builder.Build();
 
     app.MapControllers();
 
+    Console.WriteLine("Test ci for shopping cart");
+
     app.Run();
 }
 

@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+
+WORKDIR /app
+
+COPY src/backend/shoppingCartService/api/api.csproj ./api/
+COPY src/backend/shoppingCartService/presentation/presentation.csproj ./presentation/
+COPY src/backend/shoppingCartService/infrastructure/infrastructure.csproj ./infrastructure/
+COPY src/backend/shoppingCartService/domain/domain.csproj ./domain/
+COPY src/backend/shoppingCartService/build.proj .
+
+RUN dotnet restore
+
+COPY src/backend/shoppingCartService/. .
+
+RUN dotnet publish ./api/api.csproj -o /publish/
+
+WORKDIR /publish
+
+ENV ASPNETCORE_URLS="http://0.0.0.0:3040"
+
+ENTRYPOINT [ "dotnet", "api.dll" ]
