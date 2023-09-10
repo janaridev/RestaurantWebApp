@@ -48,6 +48,16 @@
     <li>Docker</li>
 </ul>
 
+<h4>Shopping Cart Service :</h4>
+<ul>
+    <li>ASP.NET Core Web Api</li>
+    <li>C#</li>
+    <li>MySQL</li>
+    <li>Entity Framework Core</li>
+    <li>Auto Mapper</li>
+    <li>Docker</li>
+</ul>
+
 <h4>Other :</h4>
 <ul>
     <li>NGINX</li>
