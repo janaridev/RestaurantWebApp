@@ -60,6 +60,11 @@ const Navbar = () => {
                 </div>
               </li>
             )}
+            <li className="nav-item">
+              <a className="nav-link" href="/cart">
+                <i className="bi bi-cart"></i>
+              </a>
+            </li>
           </ul>
 
           {token === null ? (
