@@ -13,6 +13,7 @@ import { AuthState } from "./state";
 import ProductIndex from "./pages/contentManagement/product";
 import CreateProduct from "./pages/contentManagement/product/CreateProduct";
 import Details from "./pages/homePage/Details";
+import Cart from "./pages/cart";
 
 const App = () => {
   const role = useSelector((state: AuthState) => state.role);
@@ -54,6 +55,9 @@ const App = () => {
             path="/product/create"
             element={role === "Admin" ? <CreateProduct /> : <Navigate to="/" />}
           />
+
+          {/* CART */}
+          <Route path="/cart" element={<Cart />} />
         </Routes>
         <ToastContainer />
       </Container>
