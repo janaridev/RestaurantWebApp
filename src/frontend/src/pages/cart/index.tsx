@@ -53,7 +53,7 @@ const Cart = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
-        console.error("Error creating product:", axiosError);
+        console.error("Error getting cart:", axiosError);
         const response: AxiosResponse<any> | undefined = axiosError.response;
         const errorMessage = response?.data?.error || "An error occurred";
 
@@ -103,6 +103,75 @@ const Cart = () => {
   useEffect(() => {
     getCart();
   }, []);
+
+  const deleteCartDetail = async (cartDetailId: string) => {
+    try {
+      await axios.delete(`http://localhost/api/cart/${cartDetailId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("Product was deleted from cart!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      getCart();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        console.error("Error deleting product from cart:", axiosError);
+        const response: AxiosResponse<any> | undefined = axiosError.response;
+        const errorMessage = response?.data?.error || "An error occurred";
+
+        if (axiosError.response?.status === 401) {
+          dispatch(setLogout());
+
+          toast.error("Token expired", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+
+          navigate("/login");
+        } else {
+          toast.error(errorMessage, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      } else {
+        console.error("Unknown error:", error);
+        toast.error("An error occured", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    }
+  };
 
   return (
     <form method="post">
@@ -163,7 +232,10 @@ const Cart = () => {
                   >
                     <span style={{ fontSize: "17px" }}>{cartDetail.count}</span>
                   </div>
-                  <div className="col-2 col-lg-1 p-0 pt-lg-4 text-center">
+                  <div
+                    className="col-2 col-lg-1 p-0 pt-lg-4 text-center"
+                    onClick={() => deleteCartDetail(cartDetail.cartDetailsId)}
+                  >
                     <a className="btn btn-sm btn-danger">
                       <i className="bi bi-trash-fill"></i>
                     </a>
