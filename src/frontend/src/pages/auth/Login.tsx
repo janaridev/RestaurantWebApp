@@ -13,6 +13,7 @@ interface LoginFormValues {
 }
 
 interface CustomJwtPayload {
+  id: string;
   email: string;
   role: string;
 }
@@ -44,11 +45,13 @@ const Login = () => {
       const decodedToken: CustomJwtPayload = jwtDecode<CustomJwtPayload>(
         response.data.result
       );
+      const id: string = decodedToken.id;
       const email: string = decodedToken.email;
       const role: string = decodedToken.role;
 
       dispatch(
         setLogin({
+          id,
           email,
           role,
           token: response.data.result,
