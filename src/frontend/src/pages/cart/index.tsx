@@ -11,7 +11,7 @@ import {
   CouponCodeInput,
   couponCodeSchema,
   couponInitialValue,
-} from "../../validationSchemas/couponValidation";
+} from "../../validationSchemas/cartValidation";
 
 interface Cart {
   cartHeader: CartHeader;
