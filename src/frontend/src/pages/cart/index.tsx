@@ -6,8 +6,12 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
-import * as yup from "yup";
 import { ErrorMessage, Field, Formik } from "formik";
+import {
+  CouponCodeInput,
+  couponCodeSchema,
+  couponInitialValue,
+} from "../../validationSchemas/couponValidation";
 
 interface Cart {
   cartHeader: CartHeader;
@@ -33,21 +37,6 @@ interface CartDetails {
 interface ProductWithId extends Product {
   _id: string;
 }
-
-interface CouponCodeInput {
-  couponCode: string;
-}
-
-const couponCodeSchema = yup.object().shape({
-  couponCode: yup
-    .string()
-    .min(3, "Min length of coupon code: 3")
-    .required("Required field."),
-});
-
-const initialValue: CouponCodeInput = {
-  couponCode: "", // Changed initial count to 1
-};
 
 const Cart = () => {
   const id = useSelector((state: AuthState) => state.id);
@@ -362,7 +351,7 @@ const Cart = () => {
               <div className="row">
                 <div className="col-6">
                   <Formik
-                    initialValues={initialValue}
+                    initialValues={couponInitialValue}
                     validationSchema={couponCodeSchema}
                     onSubmit={handleSubmit}
                   >
@@ -406,18 +395,10 @@ const Cart = () => {
                 </div>
               </div>
             </div>
-            <div className="card-footer row">
-              <div className="col-6 col-md-3 ">
-                <button
-                  type="submit"
-                  className="btn btn-outline-danger form-control"
-                >
-                  Email Cart
-                </button>
-              </div>
-              <div className="col-6 col-md-3 offset-md-6">
-                <button disabled className="btn btn-success form-control ">
-                  Checkout (Comming Soon!)
+            <div className="card-footer row justify-content-end">
+              <div className="col-6 col-md-3">
+                <button disabled className="btn btn-success form-control">
+                  Checkout (Coming Soon!)
                 </button>
               </div>
             </div>
