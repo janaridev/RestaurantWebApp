@@ -13,7 +13,7 @@ export const loginSchema = yup.object().shape({
     .required("Password is a required field."),
 });
 
-export const initialValuesCoupon: LoginFormValues = {
+export const loginInitialValues: LoginFormValues = {
   email: "",
   password: "",
 };

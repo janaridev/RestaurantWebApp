@@ -1,26 +1,11 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthState, setLogout } from "../../../state";
 import CouponFormValues from "../../../interfaces/Coupon";
-
-const couponSchema = yup.object().shape({
-  couponCode: yup.string().required("Required field."),
-  discountAmount: yup
-    .number()
-    .min(1, "Discount Amount must be greater than 0")
-    .required("Required field."),
-  minAmount: yup.number().min(1, "Minimum Amount must be greater than 0"),
-});
-
-const initialValuesCoupon: CouponFormValues = {
-  couponCode: "",
-  discountAmount: 0,
-  minAmount: 0,
-};
+import { couponInitialValues, couponSchema } from "../../../validationSchemas/couponValidation";
 
 const CreateCoupon = () => {
   const navigate = useNavigate();
@@ -79,7 +64,7 @@ const CreateCoupon = () => {
 
   return (
     <Formik
-      initialValues={initialValuesCoupon}
+      initialValues={couponInitialValues}
       validationSchema={couponSchema}
       onSubmit={handleSubmit}
     >

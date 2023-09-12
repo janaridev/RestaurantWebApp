@@ -7,7 +7,7 @@ import { setLogin } from "../../state";
 import jwtDecode from "jwt-decode";
 import {
   LoginFormValues,
-  initialValuesCoupon,
+  loginInitialValues,
   loginSchema,
 } from "../../validationSchemas/loginValidation";
 
@@ -83,7 +83,7 @@ const Login = () => {
 
   return (
     <Formik
-      initialValues={initialValuesCoupon}
+      initialValues={loginInitialValues}
       validationSchema={loginSchema}
       onSubmit={handleSubmit}
     >
