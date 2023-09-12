@@ -397,7 +397,12 @@ const Cart = () => {
                     )}{" "}
                     <br />
                   </span>
-                  <span className="text-success"> Order Discount : $$</span>
+                  {cart?.cartHeader.discount !== 0 && (
+                    <span className="text-success">
+                      Order Discount :
+                      {formatCurrency(cart?.cartHeader.discount)}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
