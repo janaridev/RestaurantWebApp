@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
 import Product from "../../interfaces/Product";
-import * as yup from "yup";
 import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { AuthState } from "../../state";
 import { toast } from "react-toastify";
+import {
+  ProductCountInput,
+  countInitialValue,
+  productCountSchema,
+} from "../../validationSchemas/detailsValidation";
 
 interface Cart {
   cartHeader: CartHeader;
@@ -22,21 +26,6 @@ interface CartDetails {
   productId: string | undefined;
   count: number;
 }
-
-interface ProductCountInput {
-  count: number;
-}
-
-const productCountSchema = yup.object().shape({
-  count: yup
-    .number()
-    .min(1, "Min count of product: 1")
-    .required("Required field."),
-});
-
-const initialValue: ProductCountInput = {
-  count: 1, // Changed initial count to 1
-};
 
 const Details = () => {
   const id = useSelector((state: AuthState) => state.id);
@@ -128,7 +117,7 @@ const Details = () => {
   };
 
   const formik = useFormik({
-    initialValues: initialValue,
+    initialValues: countInitialValue,
     validationSchema: productCountSchema,
     onSubmit: handleSubmit,
   });
