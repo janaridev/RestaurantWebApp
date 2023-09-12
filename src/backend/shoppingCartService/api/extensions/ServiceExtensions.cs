@@ -47,7 +47,7 @@ public static class ServiceExtensions
         services.AddHttpClient("Product", u => u.BaseAddress =
             new Uri(configuration[$"Services:{productService}"]));
         services.AddHttpClient("Coupon", u => u.BaseAddress =
-            new Uri(configuration["Services:CouponService"]));
+            new Uri(configuration[$"Services:{couponService}"]));
     }
 
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)

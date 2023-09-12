@@ -162,6 +162,12 @@ public class ShoppingCartController : ControllerBase
                 return BadRequest(ApiResponseHandler.SendErrorResponse(400, "Provide more information."));
             }
 
+            var coupon = await _couponService.GetCoupons(cartDto.CartHeader.CouponCode);
+            if (coupon.DiscountAmount is 0)
+            {
+                return BadRequest(ApiResponseHandler.SendErrorResponse(400, "Coupon was not found"));
+            }
+
             var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(
                 cartDto.CartHeader.UserId, trackChanges: false);
             if (cartHeaderFromDb is null)
