@@ -1,35 +1,21 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
 import jwtDecode from "jwt-decode";
-
-interface LoginFormValues {
-  email: string;
-  password: string;
-}
+import {
+  LoginFormValues,
+  initialValuesCoupon,
+  loginSchema,
+} from "../../validationSchemas/loginValidation";
 
 interface CustomJwtPayload {
   id: string;
   email: string;
   role: string;
 }
-
-const loginSchema = yup.object().shape({
-  email: yup.string().required("Email is a required field.").email(),
-  password: yup
-    .string()
-    .min(5, "Password must be at least 8 characters long.")
-    .required("Password is a required field."),
-});
-
-const initialValuesCoupon: LoginFormValues = {
-  email: "",
-  password: "",
-};
 
 const Login = () => {
   const navigate = useNavigate();
