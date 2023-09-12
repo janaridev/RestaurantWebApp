@@ -2,7 +2,6 @@ using AutoMapper;
 using domain.dtos;
 using domain.entities;
 using domain.irepository;
-using domain.responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using presentation.services.coupon;
@@ -31,19 +30,19 @@ public class ShoppingCartController : ControllerBase
     }
 
 
-    [HttpGet("{userId}")]
+    [HttpGet("{userId}", Name = "GetCart")]
     [Authorize]
-    public async Task<CustomResponse> GetCart(string userId)
+    public async Task<IActionResult> GetCart(string userId)
     {
         try
         {
             if (userId is null)
-                return ApiResponseHandler.SendErrorResponse(400, "User id is null");
+                return BadRequest(ApiResponseHandler.SendErrorResponse(400, "User id is null"));
 
             var cartHeader = await _repositoryManager.CartHeader.GetCartHeaderByUserId(userId,
                 trackChanges: false);
             if (cartHeader is null)
-                return ApiResponseHandler.SendErrorResponse(404, "User is not exists.");
+                return Ok(ApiResponseHandler.SendSuccessResponse(200, null));
 
             CartDto cart = new()
             {
@@ -75,32 +74,32 @@ public class ShoppingCartController : ControllerBase
                 }
             }
 
-            return ApiResponseHandler.SendSuccessResponse(200, cart);
+            return Ok(ApiResponseHandler.SendSuccessResponse(200, cart));
         }
         catch (Exception e)
         {
             Console.WriteLine($"--> Error while getting cart : {e.Message}");
-            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+            return StatusCode(500, ApiResponseHandler.SendErrorResponse(500, "Something went wrong"));
         }
     }
 
 
     [HttpPost("upsert")]
     [Authorize]
-    public async Task<CustomResponse> Upsert(CartDto cartDto)
+    public async Task<IActionResult> Upsert(CartDto cartDto)
     {
         try
         {
             if (cartDto.CartHeader.UserId is null || cartDto.CartDetails.First().Count is 0 ||
                 cartDto.CartDetails.First().ProductId is null)
             {
-                return ApiResponseHandler.SendErrorResponse(400, "Provide more information.");
+                return BadRequest(ApiResponseHandler.SendErrorResponse(400, "Provide more information."));
             }
 
             var product = await _productService.GetProductById(cartDto.CartDetails
                 .First().ProductId);
             if (product.Name is null)
-                return ApiResponseHandler.SendErrorResponse(404, "Seems like product was deleted.");
+                return NotFound(ApiResponseHandler.SendErrorResponse(404, "Seems like product was deleted."));
 
             var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(
                 cartDto.CartHeader.UserId, trackChanges: false);
@@ -142,32 +141,38 @@ public class ShoppingCartController : ControllerBase
                 }
             }
 
-            return ApiResponseHandler.SendSuccessResponse(201, "Created");
+            return Created("GetCart", ApiResponseHandler.SendSuccessResponse(201, "Created"));
         }
         catch (Exception e)
         {
             Console.WriteLine($"--> Error while upserting to shopping cart : {e.Message}");
-            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+            return StatusCode(500, ApiResponseHandler.SendErrorResponse(500, "Something went wrong"));
         }
     }
 
 
     [HttpPost("applyCoupon")]
     [Authorize]
-    public async Task<CustomResponse> ApplyCoupon([FromBody] CartDto cartDto)
+    public async Task<IActionResult> ApplyCoupon([FromBody] CartDto cartDto)
     {
         try
         {
             if (cartDto.CartHeader.UserId is null || cartDto.CartHeader.CouponCode is null)
             {
-                return ApiResponseHandler.SendErrorResponse(400, "Provide more information.");
+                return BadRequest(ApiResponseHandler.SendErrorResponse(400, "Provide more information."));
+            }
+
+            var coupon = await _couponService.GetCoupons(cartDto.CartHeader.CouponCode);
+            if (coupon.DiscountAmount is 0)
+            {
+                return BadRequest(ApiResponseHandler.SendErrorResponse(400, "Coupon was not found"));
             }
 
             var cartHeaderFromDb = await _repositoryManager.CartHeader.GetCartHeaderByUserId(
                 cartDto.CartHeader.UserId, trackChanges: false);
             if (cartHeaderFromDb is null)
             {
-                return ApiResponseHandler.SendErrorResponse(400, "User was not found");
+                return BadRequest(ApiResponseHandler.SendErrorResponse(400, "User was not found"));
             }
 
             cartHeaderFromDb.CouponCode = cartDto.CartHeader.CouponCode;
@@ -175,19 +180,19 @@ public class ShoppingCartController : ControllerBase
 
             await _repositoryManager.SaveAsync();
 
-            return ApiResponseHandler.SendSuccessResponse(200, "Coupon was applied");
+            return Ok(ApiResponseHandler.SendSuccessResponse(200, "Coupon was applied"));
         }
         catch (Exception e)
         {
             Console.WriteLine($"--> Error while applying coupon code : {e.Message}");
-            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+            return StatusCode(500, ApiResponseHandler.SendErrorResponse(500, "Something went wrong"));
         }
     }
 
 
     [HttpDelete("{cartDetailId}")]
     [Authorize]
-    public async Task<CustomResponse> Remove(Guid cartDetailId)
+    public async Task<IActionResult> Remove(Guid cartDetailId)
     {
         try
         {
@@ -195,7 +200,7 @@ public class ShoppingCartController : ControllerBase
                 trackChanges: false);
             if (cartDetail is null)
             {
-                return ApiResponseHandler.SendErrorResponse(404, "Cart Detail was not found.");
+                return NotFound(ApiResponseHandler.SendErrorResponse(404, "Cart Detail was not found."));
             }
 
             int totalCountOfCartItem = await _repositoryManager.CartDetails.TotalCountOfCartItem(cartDetail.CartHeaderId,
@@ -210,12 +215,12 @@ public class ShoppingCartController : ControllerBase
             }
             await _repositoryManager.SaveAsync();
 
-            return ApiResponseHandler.SendSuccessResponse(200, "Product was removed from cart");
+            return Ok(ApiResponseHandler.SendSuccessResponse(200, "Product was removed from cart"));
         }
         catch (Exception e)
         {
             Console.WriteLine($"--> Error while deleting shopping cart : {e.Message}");
-            return ApiResponseHandler.SendErrorResponse(500, "Something went wrong");
+            return StatusCode(500, ApiResponseHandler.SendErrorResponse(500, "Something went wrong"));
         }
     }
 }

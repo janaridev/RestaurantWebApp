@@ -1,30 +1,14 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthState, setLogout } from "../../../state";
 import ProductFormValues from "../../../interfaces/Product";
-
-const productSchema = yup.object().shape({
-  name: yup.string().required("Required field."),
-  price: yup
-    .number()
-    .min(1, "Discount Amount must be greater than 0")
-    .required("Required field."),
-  description: yup.string().required("Required field."),
-  categoryName: yup.string().required("Required field."),
-  imageUrl: yup.string().required("Required field."),
-});
-
-const initialValuesProduct: ProductFormValues = {
-  name: "",
-  price: 0,
-  description: "",
-  categoryName: "",
-  imageUrl: "",
-};
+import {
+  productInitialValues,
+  productSchema,
+} from "../../../validationSchemas/productValidation";
 
 const CreateProduct = () => {
   const navigate = useNavigate();
@@ -83,7 +67,7 @@ const CreateProduct = () => {
 
   return (
     <Formik
-      initialValues={initialValuesProduct}
+      initialValues={productInitialValues}
       validationSchema={productSchema}
       onSubmit={handleSubmit}
     >
