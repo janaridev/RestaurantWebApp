@@ -62,8 +62,8 @@ const App = () => {
             element={
               role === "Client" || role === "Admin" ? (
                 <Cart />
-              ) : ( 
-                <Navigate to="/" />
+              ) : (
+                <Navigate to="/login" />
               )
             }
           />
