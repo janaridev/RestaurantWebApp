@@ -57,7 +57,16 @@ const App = () => {
           />
 
           {/* CART */}
-          <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/cart"
+            element={
+              role === "Client" || role === "Admin" ? (
+                <Cart />
+              ) : ( 
+                <Navigate to="/" />
+              )
+            }
+          />
         </Routes>
         <ToastContainer />
       </Container>
