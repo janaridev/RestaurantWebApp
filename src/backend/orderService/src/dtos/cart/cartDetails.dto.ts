@@ -1,5 +1,5 @@
 import { CartHeaderDto } from "./cartHeader.dto";
-import { ProductDto } from "./product.dto";
+import { ProductDto } from "../product/product.dto";
 
 export interface CartDetailsDto {
   cartDetailsId: string;
