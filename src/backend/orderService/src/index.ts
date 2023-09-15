@@ -1,17 +1,14 @@
-import express from "express";
-import cors from "cors";
+import buildServer from "./server";
 
-const app = express();
+const server = buildServer();
 const port = Number(Bun.env.PORT);
 
-app.use(cors());
+function main() {
+  port
+    ? server.listen(port, () => {
+        console.log(`Listening on port ${port}...`);
+      })
+    : console.error("Port is undefined or is busy");
+}
 
-app.get("/", (req, res) => {
-  res.status(200).send({ message: "Hello World" });
-});
-
-port
-  ? app.listen(port, () => {
-      console.log(`Listening on port ${port}...`);
-    })
-  : console.error("Port is undefined or is busy");
+main();
