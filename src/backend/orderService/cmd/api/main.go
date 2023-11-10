@@ -2,6 +2,7 @@ package main
 
 import (
 	"orderService/initializers"
+	"orderService/services/product"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ func init() {
 }
 
 func main() {
+	product.GetAllProducts()
 	router := gin.Default()
 
 	router.GET("/api/healthCheck", func(ctx *gin.Context) {
